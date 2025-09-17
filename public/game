@@ -1,61 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simple Ball Game</title>
+  <title>Ball Game + Web3</title>
 </head>
 <body>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <button id="connectWallet">Connect Wallet</button>
+  <div id="status">Not connected</div>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
 
-    <script>
-        // Get the canvas and context
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // Ball properties
-        let x = 200;
-        let y = 200;
-        let radius = 15;
-        let speedX = 2;
-        let speedY = 2;
-
-        // Update game frame
-        function update() {
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Move ball
-            x += speedX;
-            y += speedY;
-
-            // Bounce off walls
-            if (x + radius > canvas.width || x - radius < 0) {
-                speedX = -speedX;
-            }
-            if (y + radius > canvas.height || y - radius < 0) {
-                speedY = -speedY;
-            }
-
-            // Draw ball
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fillStyle = "red";
-            ctx.fill();
-            ctx.closePath();
-
-            // Call update again
-            requestAnimationFrame(update);
+  <script>
+    // Web3 / wallet stuff
+    async function connectWallet() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const account = accounts[0];
+          document.getElementById('status').innerText = 'Connected: ' + account;
+          startGame();
+        } catch (err) {
+          console.error('User rejected wallet connection');
+          document.getElementById('status').innerText = 'Error connecting wallet';
         }
+      } else {
+        document.getElementById('status').innerText = 'No Web3 wallet found';
+      }
+    }
 
-        // Control with arrow keys
-        document.addEventListener("keydown", function(e) {
-            if (e.key === "ArrowRight") speedX = 3;
-            if (e.key === "ArrowLeft")  speedX = -3;
-            if (e.key === "ArrowUp")    speedY = -3;
-            if (e.key === "ArrowDown")  speedY = 3;
-        });
+    document.getElementById('connectWallet').addEventListener('click', connectWallet);
 
-        // Start the game
-        update();
-    </script>
+    // Game logic
+    function startGame() {
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+
+      let x = 200, y = 200;
+      let radius = 15;
+      let speedX = 2, speedY = 2;
+
+      function update() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+
+        x += speedX;
+        y += speedY;
+
+        if (x + radius > canvas.width || x - radius < 0) speedX = -speedX;
+        if (y + radius > canvas.height || y - radius < 0) speedY = -speedY;
+
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI*2);
+        ctx.fillStyle = "red";
+        ctx.fill();
+        ctx.closePath();
+
+        requestAnimationFrame(update);
+      }
+
+      update();
+    }
+  </script>
 </body>
 </html>
