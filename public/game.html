@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Simple Maze Game</title>
+<title>Harder Maze Game</title>
 </head>
 <body style="font-family: Arial, sans-serif; text-align: center;">
 
-<h1>Maze Game</h1>
-<p>Use your mouse to guide the ball. Don't touch the walls!</p>
+<h1>Harder Maze Game</h1>
+<p>Use the **arrow keys** to guide the ball. Don't touch the walls!</p>
 
-<div id="game-area" style="position: relative; width: 500px; height: 300px; margin: 20px auto; background-color: #f0f0f0; border: 2px solid black;">
-    <div id="ball" style="position: absolute; width: 20px; height: 20px; background-color: red; border-radius: 50%; left: 10px; top: 10px;"></div>
+<div id="game-area" style="position: relative; width: 500px; height: 350px; margin: 20px auto; background-color: #f0f0f0; border: 2px solid black;">
+    <div id="ball" style="position: absolute; width: 15px; height: 15px; background-color: red; border-radius: 50%; left: 10px; top: 10px;"></div>
     
-    <div style="position: absolute; background-color: black; left: 50px; top: 0; width: 20px; height: 200px;"></div>
-    <div style="position: absolute; background-color: black; left: 50px; top: 200px; width: 300px; height: 20px;"></div>
-    <div style="position: absolute; background-color: black; left: 350px; top: 100px; width: 20px; height: 200px;"></div>
+    <div style="position: absolute; background-color: black; left: 50px; top: 0; width: 20px; height: 150px;"></div>
+    <div style="position: absolute; background-color: black; left: 50px; top: 180px; width: 300px; height: 20px;"></div>
+    <div style="position: absolute; background-color: black; left: 350px; top: 100px; width: 20px; height: 250px;"></div>
     <div style="position: absolute; background-color: black; left: 150px; top: 100px; width: 200px; height: 20px;"></div>
-    
+    <div style="position: absolute; background-color: black; left: 0; top: 250px; width: 150px; height: 20px;"></div>
+    <div style="position: absolute; background-color: black; left: 250px; top: 280px; width: 100px; height: 20px;"></div>
+    <div style="position: absolute; background-color: black; left: 150px; top: 250px; width: 20px; height: 100px;"></div>
+
     <div style="position: absolute; left: 0; top: 0; padding: 5px; color: green; font-weight: bold;">Start</div>
     <div style="position: absolute; right: 0; bottom: 0; padding: 5px; color: blue; font-weight: bold;">End</div>
 </div>
@@ -29,24 +32,52 @@
     const message = document.getElementById('message');
     const walls = gameArea.querySelectorAll('div[style*="background-color: black"]');
 
+    let ballX = 10;
+    let ballY = 10;
+    const speed = 5;
     let isGameOver = false;
 
-    gameArea.addEventListener('mousemove', (e) => {
+    document.addEventListener('keydown', (e) => {
         if (isGameOver) return;
 
-        const rect = gameArea.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        switch(e.key) {
+            case 'ArrowUp':
+                ballY -= speed;
+                break;
+            case 'ArrowDown':
+                ballY += speed;
+                break;
+            case 'ArrowLeft':
+                ballX -= speed;
+                break;
+            case 'ArrowRight':
+                ballX += speed;
+                break;
+        }
 
-        ball.style.left = mouseX - 10 + 'px';
-        ball.style.top = mouseY - 10 + 'px';
+        // Keep ball within game area boundaries
+        const gameRect = gameArea.getBoundingClientRect();
+        const ballSize = parseInt(ball.style.width);
+        
+        ballX = Math.max(0, Math.min(ballX, gameRect.width - ballSize));
+        ballY = Math.max(0, Math.min(ballY, gameRect.height - ballSize));
+
+        ball.style.left = ballX + 'px';
+        ball.style.top = ballY + 'px';
 
         checkCollision();
     });
 
     function checkCollision() {
         const ballRect = ball.getBoundingClientRect();
+        const gameRect = gameArea.getBoundingClientRect();
 
+        // Check for win condition (exiting the maze at the bottom right)
+        if (ballX >= gameRect.width - 25 && ballY >= gameRect.height - 25) {
+            endGame(true); // You win
+            return;
+        }
+        
         // Check for wall collisions
         for (const wall of walls) {
             const wallRect = wall.getBoundingClientRect();
@@ -60,17 +91,6 @@
                 return;
             }
         }
-
-        // Check for win condition (exiting the maze)
-        const gameRect = gameArea.getBoundingClientRect();
-        if (
-            ballRect.left < gameRect.left ||
-            ballRect.right > gameRect.right ||
-            ballRect.top < gameRect.top ||
-            ballRect.bottom > gameRect.bottom
-        ) {
-            endGame(true); // You win
-        }
     }
 
     function endGame(isWin) {
@@ -82,17 +102,15 @@
             message.textContent = "You lose! 💀";
             message.style.color = "red";
         }
-        
-        // Move the ball off screen to prevent further interaction
-        ball.style.left = '-100px';
-        ball.style.top = '-100px';
     }
 
     function resetGame() {
         isGameOver = false;
         message.textContent = "";
-        ball.style.left = '10px';
-        ball.style.top = '10px';
+        ballX = 10;
+        ballY = 10;
+        ball.style.left = ballX + 'px';
+        ball.style.top = ballY + 'px';
     }
 </script>
 
