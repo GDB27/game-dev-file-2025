@@ -1,136 +1,153 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>web03 - Fullscreen Maze Game</title>
+  <title>web03 - Bigger Maze Game</title>
 </head>
 <body>
 <canvas id="gameCanvas"></canvas>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
 
-    // Resize to fullscreen
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+  // Resize to fullscreen
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  // Ball
+  let ball = {
+    x: 60,
+    y: 60,
+    radius: 15,
+    speed: 5
+  };
+
+  // Exit zone
+  const exit = {
+    x: canvas.width - 80,
+    y: canvas.height - 80,
+    width: 60,
+    height: 60
+  };
+
+  // Maze walls
+  let walls = [
+    // Border walls
+    {x: 0, y: 0, width: canvas.width, height: 10},
+    {x: 0, y: 0, width: 10, height: canvas.height},
+    {x: 0, y: canvas.height - 10, width: canvas.width, height: 10},
+    {x: canvas.width - 10, y: 0, width: 10, height: canvas.height},
+
+    // Horizontal inner walls
+    {x: 100, y: 100, width: canvas.width - 200, height: 10},
+    {x: 100, y: 200, width: canvas.width - 300, height: 10},
+    {x: 200, y: 300, width: canvas.width - 400, height: 10},
+    {x: 150, y: 400, width: canvas.width - 250, height: 10},
+    {x: 100, y: 500, width: canvas.width - 200, height: 10},
+
+    // Vertical inner walls
+    {x: 100, y: 100, width: 10, height: 400},
+    {x: 200, y: 200, width: 10, height: 300},
+    {x: 300, y: 100, width: 10, height: 400},
+    {x: 400, y: 150, width: 10, height: 400},
+    {x: 500, y: 100, width: 10, height: canvas.height - 200},
+
+    // Zigzag path challenge
+    {x: 600, y: 600, width: 200, height: 10},
+    {x: 790, y: 500, width: 10, height: 100},
+    {x: 600, y: 500, width: 200, height: 10},
+    {x: 600, y: 400, width: 10, height: 100},
+    {x: 600, y: 400, width: 200, height: 10},
+    {x: 790, y: 300, width: 10, height: 100},
+    {x: 600, y: 300, width: 200, height: 10}
+  ];
+
+  // Direction
+  let dx = 0, dy = 0;
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { dx = ball.speed; dy = 0; }
+    else if (e.key === 'ArrowLeft') { dx = -ball.speed; dy = 0; }
+    else if (e.key === 'ArrowUp') { dx = 0; dy = -ball.speed; }
+    else if (e.key === 'ArrowDown') { dx = 0; dy = ball.speed; }
+  });
+
+  function drawBall() {
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  function drawWalls() {
+    ctx.fillStyle = 'black';
+    for (let wall of walls) {
+      ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+  }
 
-    // Ball
-    let ball = {
-        x: 60,
-        y: 60,
-        radius: 15,
-        speed: 5
-    };
+  function drawExit() {
+    ctx.fillStyle = 'green';
+    ctx.fillRect(exit.x, exit.y, exit.width, exit.height);
+  }
 
-    // Exit zone (green)
-    const exit = {
-        x: canvas.width - 80,
-        y: canvas.height - 80,
-        width: 60,
-        height: 60
-    };
+  function checkWallCollision() {
+    for (let wall of walls) {
+      let closestX = Math.max(wall.x, Math.min(ball.x, wall.x + wall.width));
+      let closestY = Math.max(wall.y, Math.min(ball.y, wall.y + wall.height));
+      let distX = ball.x - closestX;
+      let distY = ball.y - closestY;
+      let distance = Math.sqrt(distX * distX + distY * distY);
+      if (distance < ball.radius) return true;
+    }
+    return false;
+  }
 
-    // Walls (scaled to fullscreen)
-    let walls = [
-        {x: 0, y: 0, width: canvas.width, height: 10}, // top
-        {x: 0, y: 0, width: 10, height: canvas.height}, // left
-        {x: 0, y: canvas.height - 10, width: canvas.width, height: 10}, // bottom
-        {x: canvas.width - 10, y: 0, width: 10, height: canvas.height}, // right
+  function checkWin() {
+    return (
+      ball.x + ball.radius > exit.x &&
+      ball.x - ball.radius < exit.x + exit.width &&
+      ball.y + ball.radius > exit.y &&
+      ball.y - ball.radius < exit.y + exit.height
+    );
+  }
 
-        // Maze-like walls
-        {x: 100, y: 100, width: canvas.width - 200, height: 10},
-        {x: 100, y: 100, width: 10, height: canvas.height - 200},
-        {x: 150, y: canvas.height - 150, width: canvas.width - 300, height: 10},
-        {x: canvas.width - 150, y: 150, width: 10, height: canvas.height - 300},
-        {x: canvas.width / 2 - 5, y: 200, width: 10, height: canvas.height - 400}
-    ];
+  function resetGame(message) {
+    setTimeout(() => {
+      alert(message);
+      ball.x = 60;
+      ball.y = 60;
+      dx = 0;
+      dy = 0;
+    }, 50);
+  }
 
-    // Direction
-    let dx = 0, dy = 0;
+  function update() {
+    ball.x += dx;
+    ball.y += dy;
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') { dx = ball.speed; dy = 0; }
-        else if (e.key === 'ArrowLeft') { dx = -ball.speed; dy = 0; }
-        else if (e.key === 'ArrowUp') { dx = 0; dy = -ball.speed; }
-        else if (e.key === 'ArrowDown') { dx = 0; dy = ball.speed; }
-    });
-
-    function drawBall() {
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'red';
-        ctx.fill();
-        ctx.closePath();
+    if (checkWallCollision()) {
+      resetGame("💥 You hit a wall! Try again.");
     }
 
-    function drawWalls() {
-        ctx.fillStyle = 'black';
-        for (let wall of walls) {
-            ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
-        }
+    if (checkWin()) {
+      resetGame("🎉 You reached the exit! You win!");
     }
 
-    function drawExit() {
-        ctx.fillStyle = 'green';
-        ctx.fillRect(exit.x, exit.y, exit.width, exit.height);
-    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawExit();
+    drawWalls();
+    drawBall();
 
-    function checkWallCollision() {
-        for (let wall of walls) {
-            let closestX = Math.max(wall.x, Math.min(ball.x, wall.x + wall.width));
-            let closestY = Math.max(wall.y, Math.min(ball.y, wall.y + wall.height));
-            let distX = ball.x - closestX;
-            let distY = ball.y - closestY;
-            let distance = Math.sqrt(distX * distX + distY * distY);
-            if (distance < ball.radius) return true;
-        }
-        return false;
-    }
+    requestAnimationFrame(update);
+  }
 
-    function checkWin() {
-        return (
-            ball.x + ball.radius > exit.x &&
-            ball.x - ball.radius < exit.x + exit.width &&
-            ball.y + ball.radius > exit.y &&
-            ball.y - ball.radius < exit.y + exit.height
-        );
-    }
-
-    function resetGame(message) {
-        setTimeout(() => {
-            alert(message);
-            ball.x = 60;
-            ball.y = 60;
-            dx = 0;
-            dy = 0;
-        }, 50);
-    }
-
-    function update() {
-        ball.x += dx;
-        ball.y += dy;
-
-        if (checkWallCollision()) {
-            resetGame("💥 You hit a wall! Try again.");
-        }
-
-        if (checkWin()) {
-            resetGame("🎉 You reached the exit! You win!");
-        }
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawExit();
-        drawWalls();
-        drawBall();
-
-        requestAnimationFrame(update);
-    }
-
-    update();
+  update();
 </script>
 </body>
 </html>
