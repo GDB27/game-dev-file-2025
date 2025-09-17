@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Harder Maze Game</title>
+<title>Logical Maze Game</title>
 </head>
 <body style="font-family: Arial, sans-serif; text-align: center;">
 
-<h1>Harder Maze Game</h1>
-<p>Use the **arrow keys** to guide the ball. Don't touch the walls!</p>
+<h1>Logical Maze Game</h1>
+<p>Use the **arrow keys** to guide the ball. Follow the path to the end!</p>
 
 <div id="game-area" style="position: relative; width: 500px; height: 350px; margin: 20px auto; background-color: #f0f0f0; border: 2px solid black;">
     <div id="ball" style="position: absolute; width: 15px; height: 15px; background-color: red; border-radius: 50%; left: 10px; top: 10px;"></div>
@@ -25,6 +25,10 @@
     <div style="position: absolute; background-color: black; left: 100px; top: 300px; width: 100px; height: 20px;"></div>
     <div style="position: absolute; background-color: black; left: 100px; top: 200px; width: 20px; height: 100px;"></div>
     <div style="position: absolute; background-color: black; left: 300px; top: 180px; width: 20px; height: 100px;"></div>
+    <div style="position: absolute; background-color: black; left: 350px; top: 100px; width: 150px; height: 20px;"></div>
+    <div style="position: absolute; background-color: black; left: 200px; top: 100px; width: 20px; height: 80px;"></div>
+    <div style="position: absolute; background-color: black; left: 200px; top: 200px; width: 100px; height: 20px;"></div>
+    <div style="position: absolute; background-color: black; left: 100px; top: 0; width: 20px; height: 80px;"></div>
 
     <div style="position: absolute; left: 0; top: 0; padding: 5px; color: green; font-weight: bold;">Start</div>
     <div style="position: absolute; right: 0; bottom: 0; padding: 5px; color: blue; font-weight: bold;">End</div>
@@ -62,7 +66,6 @@
                 break;
         }
 
-        // Keep ball within game area boundaries
         const gameRect = gameArea.getBoundingClientRect();
         const ballSize = parseInt(ball.style.width);
         
@@ -79,13 +82,11 @@
         const ballRect = ball.getBoundingClientRect();
         const gameRect = gameArea.getBoundingClientRect();
 
-        // Check for win condition (exiting the maze at the bottom right)
         if (ballX >= gameRect.width - 25 && ballY >= gameRect.height - 25) {
-            endGame(true); // You win
+            endGame(true);
             return;
         }
         
-        // Check for wall collisions
         for (const wall of walls) {
             const wallRect = wall.getBoundingClientRect();
             if (
@@ -94,7 +95,7 @@
                 ballRect.top < wallRect.bottom &&
                 ballRect.bottom > wallRect.top
             ) {
-                endGame(false); // You lose
+                endGame(false);
                 return;
             }
         }
