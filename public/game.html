@@ -1,150 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Maze Game</title>
+<title>Simple Maze Game</title>
 </head>
-<body>
-<canvas id="gameCanvas"></canvas>
+<body style="font-family: Arial, sans-serif; text-align: center;">
+
+<h1>Maze Game</h1>
+<p>Use your mouse to guide the ball. Don't touch the walls!</p>
+
+<div id="game-area" style="position: relative; width: 500px; height: 300px; margin: 20px auto; background-color: #f0f0f0; border: 2px solid black;">
+    <div id="ball" style="position: absolute; width: 20px; height: 20px; background-color: red; border-radius: 50%; left: 10px; top: 10px;"></div>
+    
+    <div style="position: absolute; background-color: black; left: 50px; top: 0; width: 20px; height: 200px;"></div>
+    <div style="position: absolute; background-color: black; left: 50px; top: 200px; width: 300px; height: 20px;"></div>
+    <div style="position: absolute; background-color: black; left: 350px; top: 100px; width: 20px; height: 200px;"></div>
+    <div style="position: absolute; background-color: black; left: 150px; top: 100px; width: 200px; height: 20px;"></div>
+    
+    <div style="position: absolute; left: 0; top: 0; padding: 5px; color: green; font-weight: bold;">Start</div>
+    <div style="position: absolute; right: 0; bottom: 0; padding: 5px; color: blue; font-weight: bold;">End</div>
+</div>
+
+<p id="message" style="font-weight: bold;"></p>
+<button onclick="resetGame()">Reset</button>
 
 <script>
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+    const ball = document.getElementById('ball');
+    const gameArea = document.getElementById('game-area');
+    const message = document.getElementById('message');
+    const walls = gameArea.querySelectorAll('div[style*="background-color: black"]');
 
-// Set fixed size for matching your image (364x365 approx)
-canvas.width = 364;
-canvas.height = 365;
+    let isGameOver = false;
 
-// Ball
-let ball = {
-  x: 332, // Starting point near bottom (based on image)
-  y: 332,
-  radius: 6,
-  speed: 2
-};
+    gameArea.addEventListener('mousemove', (e) => {
+        if (isGameOver) return;
 
-// Exit (orange square at top)
-const exit = {
-  x: 170, y: 2, width: 20, height: 10
-};
+        const rect = gameArea.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
 
-// Maze walls (hand-drawn based on your image)
-const walls = [
-  {x: 0, y: 0, width: 364, height: 5},    // top border
-  {x: 0, y: 0, width: 5, height: 365},    // left border
-  {x: 0, y: 360, width: 364, height: 5},  // bottom border
-  {x: 359, y: 0, width: 5, height: 365},  // right border
+        ball.style.left = mouseX - 10 + 'px';
+        ball.style.top = mouseY - 10 + 'px';
 
-  // Inner walls (simplified from your image)
-  {x: 40, y: 0, width: 5, height: 80},
-  {x: 80, y: 40, width: 5, height: 80},
-  {x: 120, y: 0, width: 5, height: 160},
-  {x: 160, y: 80, width: 5, height: 160},
-  {x: 200, y: 40, width: 5, height: 160},
-  {x: 240, y: 0, width: 5, height: 120},
-  {x: 280, y: 80, width: 5, height: 160},
-  {x: 320, y: 40, width: 5, height: 160},
+        checkCollision();
+    });
 
-  {x: 40, y: 200, width: 5, height: 160},
-  {x: 80, y: 240, width: 5, height: 80},
-  {x: 120, y: 200, width: 5, height: 160},
-  {x: 160, y: 280, width: 5, height: 80},
-  {x: 200, y: 240, width: 5, height: 120},
-  {x: 240, y: 280, width: 5, height: 80},
-  {x: 280, y: 200, width: 5, height: 160},
-  {x: 320, y: 240, width: 5, height: 80},
+    function checkCollision() {
+        const ballRect = ball.getBoundingClientRect();
 
-  // Cross walls (horizontal sections)
-  {x: 5, y: 40, width: 120, height: 5},
-  {x: 5, y: 120, width: 200, height: 5},
-  {x: 160, y: 160, width: 200, height: 5},
-  {x: 5, y: 200, width: 160, height: 5},
-  {x: 200, y: 240, width: 160, height: 5},
-  {x: 80, y: 280, width: 200, height: 5},
-  {x: 5, y: 320, width: 120, height: 5}
-];
+        // Check for wall collisions
+        for (const wall of walls) {
+            const wallRect = wall.getBoundingClientRect();
+            if (
+                ballRect.left < wallRect.right &&
+                ballRect.right > wallRect.left &&
+                ballRect.top < wallRect.bottom &&
+                ballRect.bottom > wallRect.top
+            ) {
+                endGame(false); // You lose
+                return;
+            }
+        }
 
-let dx = 0, dy = 0;
+        // Check for win condition (exiting the maze)
+        const gameRect = gameArea.getBoundingClientRect();
+        if (
+            ballRect.left < gameRect.left ||
+            ballRect.right > gameRect.right ||
+            ballRect.top < gameRect.top ||
+            ballRect.bottom > gameRect.bottom
+        ) {
+            endGame(true); // You win
+        }
+    }
 
-// Movement keys
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight') { dx = ball.speed; dy = 0; }
-  else if (e.key === 'ArrowLeft') { dx = -ball.speed; dy = 0; }
-  else if (e.key === 'ArrowUp') { dx = 0; dy = -ball.speed; }
-  else if (e.key === 'ArrowDown') { dx = 0; dy = ball.speed; }
-});
+    function endGame(isWin) {
+        isGameOver = true;
+        if (isWin) {
+            message.textContent = "You win! 🎉";
+            message.style.color = "green";
+        } else {
+            message.textContent = "You lose! 💀";
+            message.style.color = "red";
+        }
+        
+        // Move the ball off screen to prevent further interaction
+        ball.style.left = '-100px';
+        ball.style.top = '-100px';
+    }
 
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  ctx.fillStyle = 'black';
-  ctx.fill();
-  ctx.closePath();
-}
-
-function drawWalls() {
-  ctx.fillStyle = 'black';
-  for (let wall of walls) {
-    ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
-  }
-}
-
-function drawExit() {
-  ctx.fillStyle = 'orange';
-  ctx.fillRect(exit.x, exit.y, exit.width, exit.height);
-}
-
-function checkCollision() {
-  for (let wall of walls) {
-    let closestX = Math.max(wall.x, Math.min(ball.x, wall.x + wall.width));
-    let closestY = Math.max(wall.y, Math.min(ball.y, wall.y + wall.height));
-    let distX = ball.x - closestX;
-    let distY = ball.y - closestY;
-    let distance = Math.sqrt(distX * distX + distY * distY);
-    if (distance < ball.radius) return true;
-  }
-  return false;
-}
-
-function checkWin() {
-  return (
-    ball.x + ball.radius > exit.x &&
-    ball.x - ball.radius < exit.x + exit.width &&
-    ball.y + ball.radius > exit.y &&
-    ball.y - ball.radius < exit.y + exit.height
-  );
-}
-
-function resetGame(message) {
-  setTimeout(() => {
-    alert(message);
-    ball.x = 332;
-    ball.y = 332;
-    dx = 0;
-    dy = 0;
-  }, 50);
-}
-
-function update() {
-  ball.x += dx;
-  ball.y += dy;
-
-  if (checkCollision()) {
-    resetGame("💥 You hit a wall!");
-  }
-
-  if (checkWin()) {
-    resetGame("🎉 You reached the exit!");
-  }
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawExit();
-  drawWalls();
-  drawBall();
-
-  requestAnimationFrame(update);
-}
-
-update();
+    function resetGame() {
+        isGameOver = false;
+        message.textContent = "";
+        ball.style.left = '10px';
+        ball.style.top = '10px';
+    }
 </script>
+
 </body>
 </html>
