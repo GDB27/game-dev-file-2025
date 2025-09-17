@@ -145,20 +145,16 @@
             if (keys.left) newX -= ballSpeed;
             if (keys.right) newX += ballSpeed;
             
-            // Check collision before moving
-            if (!checkCollision(newX, ballY)) {
-                ballX = newX;
-            }
-            if (!checkCollision(ballX, newY)) {
-                ballY = newY;
-            }
-            
-            // If stuck in wall somehow, game over
-            if (checkCollision(ballX, ballY)) {
+            // Check collision - if touching wall, game over immediately
+            if (checkCollision(newX, newY) || checkCollision(newX, ballY) || checkCollision(ballX, newY)) {
                 gameState = 'lost';
-                statusElement.innerHTML = '<span style="color: red; font-weight: bold;">GAME OVER! You hit a wall!</span>';
+                statusElement.innerHTML = '<span style="color: red; font-weight: bold;">GAME OVER! You touched a wall!</span>';
                 return;
             }
+            
+            // Move ball only if no collision
+            ballX = newX;
+            ballY = newY;
             
             // Check for win
             if (checkWin()) {
