@@ -1,126 +1,252 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Logical Maze Game</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balanced Ball Path Game</title>
 </head>
-<body style="font-family: Arial, sans-serif; text-align: center;">
+<body bgcolor="#f0f0f0">
+    <div align="center">
+        <h1>Ball Path Game</h1>
+        <p>Use arrow keys to navigate through the maze. Find your way to the exit!</p>
+        <p id="status">Press any arrow key to start</p>
+        <canvas id="gameCanvas" width="600" height="600" style="border: 3px solid black; background-color: white;"></canvas>
+        <br><br>
+        <button onclick="resetGame()">Reset Game</button>
+        <p><strong>Controls:</strong> ↑ ↓ ← → Arrow Keys</p>
+    </div>
 
-<h1>Logical Maze Game</h1>
-<p>Use the **arrow keys** to guide the ball. Follow the path to the end!</p>
-
-<div id="game-area" style="position: relative; width: 500px; height: 350px; margin: 20px auto; background-color: #f0f0f0; border: 2px solid black;">
-    <div id="ball" style="position: absolute; width: 15px; height: 15px; background-color: red; border-radius: 50%; left: 10px; top: 10px;"></div>
-    
-    <div style="position: absolute; background-color: black; left: 50px; top: 0; width: 20px; height: 150px;"></div>
-    <div style="position: absolute; background-color: black; left: 50px; top: 180px; width: 300px; height: 20px;"></div>
-    <div style="position: absolute; background-color: black; left: 350px; top: 100px; width: 20px; height: 250px;"></div>
-    <div style="position: absolute; background-color: black; left: 150px; top: 100px; width: 200px; height: 20px;"></div>
-    <div style="position: absolute; background-color: black; left: 0; top: 250px; width: 150px; height: 20px;"></div>
-    <div style="position: absolute; background-color: black; left: 250px; top: 280px; width: 100px; height: 20px;"></div>
-    <div style="position: absolute; background-color: black; left: 150px; top: 250px; width: 20px; height: 100px;"></div>
-    <div style="position: absolute; background-color: black; left: 200px; top: 0; width: 20px; height: 80px;"></div>
-    <div style="position: absolute; background-color: black; left: 200px; top: 80px; width: 150px; height: 20px;"></div>
-    <div style="position: absolute; background-color: black; left: 400px; top: 0; width: 20px; height: 120px;"></div>
-    <div style="position: absolute; background-color: black; left: 400px; top: 200px; width: 20px; height: 150px;"></div>
-    <div style="position: absolute; background-color: black; left: 100px; top: 300px; width: 100px; height: 20px;"></div>
-    <div style="position: absolute; background-color: black; left: 100px; top: 200px; width: 20px; height: 100px;"></div>
-    <div style="position: absolute; background-color: black; left: 300px; top: 180px; width: 20px; height: 100px;"></div>
-    <div style="position: absolute; background-color: black; left: 350px; top: 100px; width: 150px; height: 20px;"></div>
-    <div style="position: absolute; background-color: black; left: 200px; top: 100px; width: 20px; height: 80px;"></div>
-    <div style="position: absolute; background-color: black; left: 200px; top: 200px; width: 100px; height: 20px;"></div>
-    <div style="position: absolute; background-color: black; left: 100px; top: 0; width: 20px; height: 80px;"></div>
-
-    <div style="position: absolute; left: 0; top: 0; padding: 5px; color: green; font-weight: bold;">Start</div>
-    <div style="position: absolute; right: 0; bottom: 0; padding: 5px; color: blue; font-weight: bold;">End</div>
-</div>
-
-<p id="message" style="font-weight: bold;"></p>
-<button onclick="resetGame()">Reset</button>
-
-<script>
-    const ball = document.getElementById('ball');
-    const gameArea = document.getElementById('game-area');
-    const message = document.getElementById('message');
-    const walls = gameArea.querySelectorAll('div[style*="background-color: black"]');
-
-    let ballX = 10;
-    let ballY = 10;
-    const speed = 5;
-    let isGameOver = false;
-
-    document.addEventListener('keydown', (e) => {
-        if (isGameOver) return;
-
-        switch(e.key) {
-            case 'ArrowUp':
-                ballY -= speed;
-                break;
-            case 'ArrowDown':
-                ballY += speed;
-                break;
-            case 'ArrowLeft':
-                ballX -= speed;
-                break;
-            case 'ArrowRight':
-                ballX += speed;
-                break;
-        }
-
-        const gameRect = gameArea.getBoundingClientRect();
-        const ballSize = parseInt(ball.style.width);
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const statusElement = document.getElementById('status');
         
-        ballX = Math.max(0, Math.min(ballX, gameRect.width - ballSize));
-        ballY = Math.max(0, Math.min(ballY, gameRect.height - ballSize));
-
-        ball.style.left = ballX + 'px';
-        ball.style.top = ballY + 'px';
-
-        checkCollision();
-    });
-
-    function checkCollision() {
-        const ballRect = ball.getBoundingClientRect();
-        const gameRect = gameArea.getBoundingClientRect();
-
-        if (ballX >= gameRect.width - 25 && ballY >= gameRect.height - 25) {
-            endGame(true);
-            return;
+        let gameState = 'ready';
+        let ballX = 40;
+        let ballY = 40;
+        let ballSpeed = 3;
+        
+        // Balanced maze - challenging but fair
+        const walls = [
+            // Outer boundary
+            {x: 0, y: 0, width: 600, height: 25},
+            {x: 0, y: 575, width: 600, height: 25},
+            {x: 0, y: 0, width: 25, height: 600},
+            {x: 575, y: 0, width: 25, height: 600},
+            
+            // Main maze structure - clear paths but with choices
+            {x: 100, y: 25, width: 25, height: 150},
+            {x: 125, y: 150, width: 100, height: 25},
+            {x: 200, y: 175, width: 25, height: 100},
+            {x: 275, y: 25, width: 25, height: 125},
+            {x: 300, y: 125, width: 75, height: 25},
+            {x: 350, y: 150, width: 25, height: 125},
+            {x: 450, y: 25, width: 25, height: 100},
+            {x: 475, y: 100, width: 100, height: 25},
+            
+            // Middle section
+            {x: 75, y: 225, width: 75, height: 25},
+            {x: 125, y: 250, width: 25, height: 75},
+            {x: 200, y: 300, width: 100, height: 25},
+            {x: 275, y: 200, width: 25, height: 125},
+            {x: 350, y: 300, width: 25, height: 75},
+            {x: 425, y: 175, width: 100, height: 25},
+            {x: 500, y: 200, width: 25, height: 150},
+            
+            // Lower section
+            {x: 25, y: 400, width: 125, height: 25},
+            {x: 125, y: 425, width: 25, height: 75},
+            {x: 200, y: 450, width: 75, height: 25},
+            {x: 250, y: 375, width: 25, height: 100},
+            {x: 325, y: 425, width: 100, height: 25},
+            {x: 400, y: 350, width: 25, height: 100},
+            {x: 450, y: 475, width: 100, height: 25},
+            
+            // Additional obstacles for variety
+            {x: 75, y: 350, width: 50, height: 25},
+            {x: 175, y: 375, width: 25, height: 50},
+            {x: 350, y: 250, width: 50, height: 25},
+            {x: 475, y: 275, width: 25, height: 50},
+            {x: 125, y: 500, width: 75, height: 25},
+            {x: 300, y: 500, width: 75, height: 25},
+        ];
+        
+        // Start area (top-left)
+        const startArea = {x: 25, y: 25, width: 50, height: 50};
+        
+        // Exit area (bottom-right)
+        const exitArea = {x: 525, y: 525, width: 50, height: 50};
+        
+        // Track pressed keys
+        const keys = {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        };
+        
+        function drawGame() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw walls (black)
+            ctx.fillStyle = 'black';
+            walls.forEach(wall => {
+                ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+            });
+            
+            // Draw start area (green)
+            ctx.fillStyle = 'lightgreen';
+            ctx.fillRect(startArea.x, startArea.y, startArea.width, startArea.height);
+            ctx.fillStyle = 'green';
+            ctx.font = '12px Arial';
+            ctx.fillText('START', 32, 55);
+            
+            // Draw exit area (orange)
+            ctx.fillStyle = 'orange';
+            ctx.fillRect(exitArea.x, exitArea.y, exitArea.width, exitArea.height);
+            ctx.fillStyle = 'red';
+            ctx.fillText('EXIT', 540, 555);
+            
+            // Draw ball (red)
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, 8, 0, Math.PI * 2);
+            ctx.fill();
         }
         
-        for (const wall of walls) {
-            const wallRect = wall.getBoundingClientRect();
-            if (
-                ballRect.left < wallRect.right &&
-                ballRect.right > wallRect.left &&
-                ballRect.top < wallRect.bottom &&
-                ballRect.bottom > wallRect.top
-            ) {
-                endGame(false);
+        function checkCollision(newX, newY) {
+            // Check if ball hits any wall
+            for (let wall of walls) {
+                if (newX - 8 < wall.x + wall.width && 
+                    newX + 8 > wall.x && 
+                    newY - 8 < wall.y + wall.height && 
+                    newY + 8 > wall.y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        function checkWin() {
+            return ballX >= exitArea.x && ballX <= exitArea.x + exitArea.width &&
+                   ballY >= exitArea.y && ballY <= exitArea.y + exitArea.height;
+        }
+        
+        function updateBall() {
+            if (gameState !== 'playing') return;
+            
+            let newX = ballX;
+            let newY = ballY;
+            
+            // Move based on pressed keys
+            if (keys.up) newY -= ballSpeed;
+            if (keys.down) newY += ballSpeed;
+            if (keys.left) newX -= ballSpeed;
+            if (keys.right) newX += ballSpeed;
+            
+            // Check collision before moving
+            if (!checkCollision(newX, ballY)) {
+                ballX = newX;
+            }
+            if (!checkCollision(ballX, newY)) {
+                ballY = newY;
+            }
+            
+            // If stuck in wall somehow, game over
+            if (checkCollision(ballX, ballY)) {
+                gameState = 'lost';
+                statusElement.innerHTML = '<span style="color: red; font-weight: bold;">GAME OVER! You hit a wall!</span>';
+                return;
+            }
+            
+            // Check for win
+            if (checkWin()) {
+                gameState = 'won';
+                statusElement.innerHTML = '<span style="color: green; font-weight: bold;">GREAT JOB! You made it to the exit!</span>';
                 return;
             }
         }
-    }
-
-    function endGame(isWin) {
-        isGameOver = true;
-        if (isWin) {
-            message.textContent = "You win! 🎉";
-            message.style.color = "green";
-        } else {
-            message.textContent = "You lose! 💀";
-            message.style.color = "red";
+        
+        function gameLoop() {
+            updateBall();
+            drawGame();
+            requestAnimationFrame(gameLoop);
         }
-    }
-
-    function resetGame() {
-        isGameOver = false;
-        message.textContent = "";
-        ballX = 10;
-        ballY = 10;
-        ball.style.left = ballX + 'px';
-        ball.style.top = ballY + 'px';
-    }
-</script>
-
+        
+        function resetGame() {
+            gameState = 'ready';
+            ballX = 50;
+            ballY = 50;
+            keys.up = false;
+            keys.down = false;
+            keys.left = false;
+            keys.right = false;
+            statusElement.textContent = 'Press any arrow key to start';
+        }
+        
+        // Keyboard event listeners
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case 'ArrowUp':
+                    e.preventDefault();
+                    keys.up = true;
+                    if (gameState === 'ready') {
+                        gameState = 'playing';
+                        statusElement.textContent = 'Navigate to the orange EXIT area!';
+                    }
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    keys.down = true;
+                    if (gameState === 'ready') {
+                        gameState = 'playing';
+                        statusElement.textContent = 'Navigate to the orange EXIT area!';
+                    }
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    keys.left = true;
+                    if (gameState === 'ready') {
+                        gameState = 'playing';
+                        statusElement.textContent = 'Navigate to the orange EXIT area!';
+                    }
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    keys.right = true;
+                    if (gameState === 'ready') {
+                        gameState = 'playing';
+                        statusElement.textContent = 'Navigate to the orange EXIT area!';
+                    }
+                    break;
+            }
+        });
+        
+        document.addEventListener('keyup', function(e) {
+            switch(e.key) {
+                case 'ArrowUp':
+                    keys.up = false;
+                    break;
+                case 'ArrowDown':
+                    keys.down = false;
+                    break;
+                case 'ArrowLeft':
+                    keys.left = false;
+                    break;
+                case 'ArrowRight':
+                    keys.right = false;
+                    break;
+            }
+        });
+        
+        // Focus canvas for keyboard events
+        canvas.setAttribute('tabindex', '0');
+        canvas.focus();
+        
+        // Start the game loop
+        drawGame();
+        gameLoop();
+    </script>
 </body>
 </html>
