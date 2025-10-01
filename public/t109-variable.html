@@ -1,6 +1,7 @@
 <html>
 <head>
 <h2 align=center>variable-gabriele</h2>
+<h2 >concatenate srings </h2>
 </head>
 <body>
     <input id="myNum01" type="text" value="fred"><br>
@@ -12,5 +13,19 @@
       const myOut = document.getElementById('mySpan01')
       myOut.innerHTML = myfred + ' ' + mymary
     }"><br>
+
+    <h2 >adding floating point</h2>
+</head>
+<body>
+    <input id="myNum03" type="text" value="fred"><br>
+    <input id="myNum04" type="text" value="mary"><br>
+    <span id="mySpan02">...</span><br>
+    <input type="button" value="add (concatenate) strings" onclick="{
+      let myfred = document.getElementById('myNum03').value
+      var mymary = document.getElementById('myNum04').value
+      const myOut = document.getElementById('mySpan02')
+      myOut.innerHTML = myfred + ' + ' + mymary+ '=' + myAnswer
+    }"><br>
+
 </body>
 </html>
