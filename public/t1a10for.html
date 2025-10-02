@@ -1,1 +1,19 @@
-<for(x=0;x >= 10;x++)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>loops-gabriele</title>
+</head>
+<body>
+    <h2 align="center">variable-gabriele</h2>
+    
+  
+    <input type="button" value="cout to 10" onclick="{
+      let myTemp=''
+      document.getElementById('myDiv01').innerHTML=''
+     for(x=0;x<=10;x++){
+       if(x==3){ myTemp+=x+' third<br>'}
+     }
+       document.getElementById('myDiv01').innerHTML= myTemp
+    } "><br>
+
+   <div id = myDiv01>...</div>
