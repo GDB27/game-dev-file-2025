@@ -6,11 +6,12 @@
 <body>
     <h2 align="center">loops-gabriele</h2>
     <input id="myNum01" type=number value="4"><br>
-  
-    <input type="button" value="cout to 10" onclick="{
-      let myTemp=''
+     
+     <input type="button" value="cout to 10" onclick="{
+      x=document.all.getElementById('myNum01').value
+    let myTemp=''
       document.getElementById('myDiv01').innerHTML=''
-     for(x=0;x<=myNum01;x++){
+     for(x=0;x<=x;x++){
        if(x==3){ myTemp+=x+' third<br>'}
          else{ myTemp+=x+'<br>'}
      }
