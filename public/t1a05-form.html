@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Forms - Fred</title>
+</head>
+<body>
+
+<h1 align="center">1a05-forms-fred.html</h1>
+
+<h2>Spiegazione semplice:</h2>
+
+<p><strong>Text/Password/Number</strong> - Caselle dove scrivi testo, password (con puntini) o numeri</p>
+
+<p><strong>Buttons</strong> - Bottoni da cliccare. Quando clicchi, succede qualcosa!</p>
+
+<p><strong>Radio Buttons</strong> - Cerchietti. Puoi sceglierne SOLO UNO</p>
+
+<p><strong>Checkboxes</strong> - Quadratini. Puoi sceglierne QUANTI VUOI</p>
+
+<p><strong>Textarea</strong> - Casella grande per scrivere tanto testo</p>
+
+<p><strong>Select Box</strong> - Menu a tendina con opzioni da scegliere</p>
+
+<p><strong>Submit/Reset</strong> - Submit invia il form, Reset cancella tutto</p>
+
+<hr>
+<p><strong>Prova gli elementi qui sotto! </strong></p>
+
+<form>
+
+<p>Name:<input type="text" id="name" value="Fred"><br>
+Password:<input type="password" id="password" value="never"><br>
+Number: <input type="number" value="6"><br>
+Button as an input: <input type="button" value="click" onclick="alert('hi')"><br>
+Button as a button tag: <button>Click</button><br></p>
+
+<p>Radio Buttons:<br>
+<input type="radio" name="myRad" value="red">Red<br>
+<input type="radio" name="myRad" value="blue">Blue<br></p>
+
+<p>Checkboxes:<br>
+<input type="checkbox" value="reading">Reading<br>
+<input type="checkbox" value="sports">Sports<br></p>
+
+<br><br>
+
+<textarea rows="4" cols="90">
+Writing here
+</textarea><br><br>
+
+<p>Select Box:<br>
+<select>
+  <option value="usa">USA</option>
+  <option value="canada">Canada</option>
+</select><br><br></p>
+
+<input type="submit" value="Submit">
+<input type="reset" value="Reset">
+
+</form>
+
+</body>
+</html>
