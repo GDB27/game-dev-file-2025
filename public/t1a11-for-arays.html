@@ -1,16 +1,13 @@
 <script>
 let myArray = new Array()
-
 myArray[0] = 'Fred'
 myArray[1] = 'Mary'
 myArray[2] = 'Zizzy'
-
 </script>
 
-<h2 align=center>t1a11-for-arays-gabriele.html</h2>
+<h2 align=center>t1a11-for-arrays-gabriele.html</h2>
 
 Max Array Entry: <input type=text id="myText01" value="3"><br>
-
 <input type=button value="Example onClick" onClick="{
   let myMax = document.getElementById('myText01').value
   let mySum = ''
@@ -21,10 +18,154 @@ Max Array Entry: <input type=text id="myText01" value="3"><br>
   }
   document.getElementById('myDiv01').innerHTML = mySum
 }">
-
 <div id="myDiv01">...</div>
 
-
 <br>
-
 You do at least 7 other arrays:<br>
+
+<br><br>
+<script>
+let colors = new Array()
+colors[0] = 'Red'
+colors[1] = 'Blue'
+colors[2] = 'Green'
+colors[3] = 'Yellow'
+</script>
+Max Array Entry: <input type=text id="myText02" value="4"><br>
+<input type=button value="Show Colors" onClick="{
+  let myMax = document.getElementById('myText02').value
+  let mySum = ''
+  document.getElementById('myDiv02').innerHTML = ' '
+  
+  for (let myLoop=0;    myLoop < myMax;   myLoop++){
+    mySum += 'Loop #:' + myLoop + ' array entry: ' + colors[myLoop] +'<br>'
+  }
+  document.getElementById('myDiv02').innerHTML = mySum
+}">
+<div id="myDiv02">...</div>
+
+<br><br>
+<script>
+let numbers = new Array()
+numbers[0] = 10
+numbers[1] = 20
+numbers[2] = 30
+</script>
+Max Array Entry: <input type=text id="myText03" value="3"><br>
+<input type=button value="Display Numbers" onClick="{
+  let myMax = document.getElementById('myText03').value
+  let mySum = ''
+  document.getElementById('myDiv03').innerHTML = ' '
+  
+  for (let myLoop=0;    myLoop < myMax;   myLoop++){
+    mySum += 'Loop #:' + myLoop + ' array entry: ' + numbers[myLoop] +'<br>'
+  }
+  document.getElementById('myDiv03').innerHTML = mySum
+}">
+<div id="myDiv03">...</div>
+
+<br><br>
+<script>
+let fruits = new Array()
+fruits[0] = 'Apple'
+fruits[1] = 'Banana'
+fruits[2] = 'Orange'
+fruits[3] = 'Grape'
+fruits[4] = 'Mango'
+</script>
+Max Array Entry: <input type=text id="myText04" value="5"><br>
+<input type=button value="List Fruits" onClick="{
+  let myMax = document.getElementById('myText04').value
+  let mySum = ''
+  document.getElementById('myDiv04').innerHTML = ' '
+  
+  for (let myLoop=0;    myLoop < myMax;   myLoop++){
+    mySum += 'Loop #:' + myLoop + ' array entry: ' + fruits[myLoop] +'<br>'
+  }
+  document.getElementById('myDiv04').innerHTML = mySum
+}">
+<div id="myDiv04">...</div>
+
+<br><br>
+<script>
+let cars = new Array()
+cars[0] = 'Toyota'
+cars[1] = 'Ford'
+cars[2] = 'Honda'
+</script>
+Max Array Entry: <input type=text id="myText05" value="3"><br>
+<input type=button value="Show Cars" onClick="{
+  let myMax = document.getElementById('myText05').value
+  let mySum = ''
+  document.getElementById('myDiv05').innerHTML = ' '
+  
+  for (let myLoop=0;    myLoop < myMax;   myLoop++){
+    mySum += 'Loop #:' + myLoop + ' array entry: ' + cars[myLoop] +'<br>'
+  }
+  document.getElementById('myDiv05').innerHTML = mySum
+}">
+<div id="myDiv05">...</div>
+
+<br><br>
+<script>
+let cities = new Array()
+cities[0] = 'Paris'
+cities[1] = 'London'
+cities[2] = 'Rome'
+cities[3] = 'Berlin'
+</script>
+Max Array Entry: <input type=text id="myText06" value="4"><br>
+<input type=button value="Display Cities" onClick="{
+  let myMax = document.getElementById('myText06').value
+  let mySum = ''
+  document.getElementById('myDiv06').innerHTML = ' '
+  
+  for (let myLoop=0;    myLoop < myMax;   myLoop++){
+    mySum += 'Loop #:' + myLoop + ' array entry: ' + cities[myLoop] +'<br>'
+  }
+  document.getElementById('myDiv06').innerHTML = mySum
+}">
+<div id="myDiv06">...</div>
+
+<br><br>
+<script>
+let animals = new Array()
+animals[0] = 'Dog'
+animals[1] = 'Cat'
+animals[2] = 'Bird'
+animals[3] = 'Fish'
+</script>
+Max Array Entry: <input type=text id="myText07" value="4"><br>
+<input type=button value="List Animals" onClick="{
+  let myMax = document.getElementById('myText07').value
+  let mySum = ''
+  document.getElementById('myDiv07').innerHTML = ' '
+  
+  for (let myLoop=0;    myLoop < myMax;   myLoop++){
+    mySum += 'Loop #:' + myLoop + ' array entry: ' + animals[myLoop] +'<br>'
+  }
+  document.getElementById('myDiv07').innerHTML = mySum
+}">
+<div id="myDiv07">...</div>
+
+<br><br>
+<script>
+let drinks = new Array()
+drinks[0] = 'Water'
+drinks[1] = 'Juice'
+drinks[2] = 'Soda'
+drinks[3] = 'Tea'
+drinks[4] = 'Coffee'
+</script>
+Max Array Entry: <input type=text id="myText08" value="5"><br>
+<input type=button value="Show Drinks" onClick="{
+  let myMax = document.getElementById('myText08').value
+  let mySum = ''
+  document.getElementById('myDiv08').innerHTML = ' '
+  
+  for (let myLoop=0;    myLoop < myMax;   myLoop++){
+    mySum += 'Loop #:' + myLoop + ' array entry: ' + drinks[myLoop] +'<br>'
+  }
+  document.getElementById('myDiv08').innerHTML = mySum
+}">
+<div id="myDiv08">...</div>
