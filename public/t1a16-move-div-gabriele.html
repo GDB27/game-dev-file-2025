@@ -12,50 +12,45 @@ Have 8 different types of objects move in different ways
 
 <br><br>
 
-<!-- Object 1: Move to fixed position -->
 <div style="position:relative; left:0; top:0" id="myDiv01">Object 1</div>
 <button onclick="{
   const myDiv = document.getElementById('myDiv01')
   myDiv.style.left = '100px'
 }">Move to 100px</button><br><br>
 
-<!-- Object 2: Move right incrementally -->
 <div style="position:relative; left:0; top:0" id="myDiv02">Object 2</div>
 <button onclick="{
   const myDiv = document.getElementById('myDiv02')
   myDiv.style.left = parseInt(myDiv.style.left) + 20 +'px'
 }">Move Right</button><br><br>
 
-<!-- Object 3: Move left incrementally -->
 <div style="position:relative; left:0; top:0" id="myDiv03">Object 3</div>
 <button onclick="{
   const myDiv = document.getElementById('myDiv03')
   myDiv.style.left = parseInt(myDiv.style.left) - 20 +'px'
 }">Move Left</button><br><br>
 
-<!-- Object 4: Move up -->
 <div style="position:relative; left:0; top:0" id="myDiv04">Object 4</div>
 <button onclick="{
   const myDiv = document.getElementById('myDiv04')
   myDiv.style.top = parseInt(myDiv.style.top) - 20 +'px'
 }">Move Up</button><br><br>
 
-<!-- Object 5: Move down -->
+
 <div style="position:relative; left:0; top:0" id="myDiv05">Object 5</div>
 <button onclick="{
   const myDiv = document.getElementById('myDiv05')
   myDiv.style.top = parseInt(myDiv.style.top) + 20 +'px'
 }">Move Down</button><br><br>
 
-<!-- Object 6: Reset position -->
-<div style="position:relative; left:0; top:0" id="myDiv06,myDiv05">Object 6</div>
+
+<div style="position:relative; left:0; top:0" id="myDiv06">Object 6</div>
 <button onclick="{
   const myDiv = document.getElementById('myDiv06')
   myDiv.style.left = '0px'
   myDiv.style.top = '0px'
 }">Reset Position</button><br><br>
 
-<!-- Object 7: Move diagonal -->
 <div style="position:relative; left:0; top:0" id="myDiv07">Object 7</div>
 <button onclick="{
   const myDiv = document.getElementById('myDiv07')
@@ -63,7 +58,6 @@ Have 8 different types of objects move in different ways
   myDiv.style.top = parseInt(myDiv.style.top) + 20 +'px'
 }">Move Diagonal</button><br><br>
 
-<!-- Object 8: Random position -->
 <div style="position:relative; left:0; top:0" id="myDiv08">Object 8</div>
 <button onclick="{
   const myDiv = document.getElementById('myDiv08')
