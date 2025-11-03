@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pallina sulla Corona</title>
+</head>
+<body style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh; background:#f0f0f0;">
+    <canvas id="canvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Parametri animazione
+        let t = 0;
+        const speed = 0.003;
+        let animationRunning = true;
+        
+        // Punti della corona (rettangolo base + 3 triangoli)
+        const points = [
+            // Inizio dal basso a sinistra del rettangolo
+            { x: 200, y: 450 },
+            { x: 200, y: 350 }, // Lato sinistro rettangolo
+            
+            // Prima punta (triangolo sinistro)
+            { x: 200, y: 350 },
+            { x: 270, y: 200 },
+            { x: 340, y: 350 },
+            
+            // Seconda punta (triangolo centrale)
+            { x: 340, y: 350 },
+            { x: 400, y: 150 },
+            { x: 460, y: 350 },
+            
+            // Terza punta (triangolo destro)
+            { x: 460, y: 350 },
+            { x: 530, y: 200 },
+            { x: 600, y: 350 },
+            
+            { x: 600, y: 350 }, // Lato destro rettangolo
+            { x: 600, y: 450 }, // Angolo basso destro
+            { x: 200, y: 450 }  // Chiudi alla base
+        ];
+        
+        // Funzione per disegnare la corona
+        function drawCorona() {
+            // Riempimento giallo
+            ctx.fillStyle = '#ffed00';
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            
+            // Bordo nero
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+        }
+        
+        // Funzione per calcolare la posizione sulla corona
+        function getPositionOnCorona(t) {
+            t = Math.min(t, 1);
+            
+            // Calcola la lunghezza totale del percorso
+            let totalLength = 0;
+            for (let i = 0; i < points.length - 1; i++) {
+                const dx = points[i + 1].x - points[i].x;
+                const dy = points[i + 1].y - points[i].y;
+                totalLength += Math.sqrt(dx * dx + dy * dy);
+            }
+            
+            // Trova la posizione corrente
+            const targetDistance = t * totalLength;
+            let currentDistance = 0;
+            
+            for (let i = 0; i < points.length - 1; i++) {
+                const dx = points[i + 1].x - points[i].x;
+                const dy = points[i + 1].y - points[i].y;
+                const segmentLength = Math.sqrt(dx * dx + dy * dy);
+                
+                if (currentDistance + segmentLength >= targetDistance) {
+                    const segmentProgress = (targetDistance - currentDistance) / segmentLength;
+                    return {
+                        x: points[i].x + dx * segmentProgress,
+                        y: points[i].y + dy * segmentProgress
+                    };
+                }
+                
+                currentDistance += segmentLength;
+            }
+            
+            return points[points.length - 1];
+        }
+        
+        // Funzione per disegnare la pallina
+        function drawBall(x, y) {
+            ctx.fillStyle = '#ff3366';
+            ctx.beginPath();
+            ctx.arc(x, y, 15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Effetto lucido
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.beginPath();
+            ctx.arc(x - 4, y - 4, 6, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Loop animazione
+        function animate() {
+            // Pulisci canvas
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Disegna la corona
+            drawCorona();
+            
+            // Calcola e disegna la pallina
+            const pos = getPositionOnCorona(t);
+            drawBall(pos.x, pos.y);
+            
+            // Aggiorna tempo solo se l'animazione è attiva
+            if (animationRunning && t < 1) {
+                t += speed;
+            } else if (t >= 1) {
+                t = 1;
+                animationRunning = false;
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Avvia animazione
+        animate();
+    </script>
+</body>
+</html>
