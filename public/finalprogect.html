@@ -7,15 +7,15 @@
 <h1 align="center"><font color="red">T4A04 Maze by Fred</font></h1>
 
 <div style="text-align: center; padding: 10px;">
-<input type="button" value="Left" onclick="movePlayer(-10, 0)">
-<input type="button" value="Up" onclick="movePlayer(0, -10)">
-<input type="button" value="Down" onclick="movePlayer(0, 10)">
-<input type="button" value="Right" onclick="movePlayer(10, 0)">
+<input type="button" value="Left" onclick="movePlayer(-5, 0)">
+<input type="button" value="Up" onclick="movePlayer(0, -5)">
+<input type="button" value="Down" onclick="movePlayer(0, 5)">
+<input type="button" value="Right" onclick="movePlayer(5, 0)">
 </div>
 
 <div style="position: relative; width: 900px; height: 600px; margin: 20px auto;">
   <canvas id="mazeCanvas" width="900" height="600" style="position: absolute; opacity: 0;"></canvas>
-  <div id="player" style="position: absolute; width: 30px; height: 30px; left: 30px; top: 30px; background-color: blue; border: 2px solid darkblue; border-radius: 5px; z-index: 3;"></div>
+  <div id="player" style="position: absolute; width: 20px; height: 20px; left: 30px; top: 30px; background-color: blue; border: 2px solid darkblue; border-radius: 5px; z-index: 3;"></div>
   <div id="goal" style="position: absolute; width: 50px; height: 50px; left: 820px; top: 520px; background-color: green; border: 3px solid darkgreen; border-radius: 5px; z-index: 2;"></div>
 </div>
 
@@ -44,14 +44,14 @@ function isOnBlack(x, y, w, h) {
   // Controlla TUTTI i pixel lungo i bordi del quadrato
   const points = [];
   
-  // Bordo superiore (ogni 2 pixel per più precisione)
-  for (let i = 0; i <= w; i += 2) points.push([x+i, y]);
+  // Bordo superiore (ogni pixel)
+  for (let i = 0; i <= w; i += 1) points.push([x+i, y]);
   // Bordo inferiore
-  for (let i = 0; i <= w; i += 2) points.push([x+i, y+h]);
+  for (let i = 0; i <= w; i += 1) points.push([x+i, y+h]);
   // Bordo sinistro
-  for (let i = 0; i <= h; i += 2) points.push([x, y+i]);
+  for (let i = 0; i <= h; i += 1) points.push([x, y+i]);
   // Bordo destro
-  for (let i = 0; i <= h; i += 2) points.push([x+w, y+i]);
+  for (let i = 0; i <= h; i += 1) points.push([x+w, y+i]);
   
   for (let [px, py] of points) {
     px = Math.floor(px);
@@ -62,13 +62,11 @@ function isOnBlack(x, y, w, h) {
         // Calcola la luminosità del pixel (media RGB)
         const brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
         
-        // DEBUG: mostra il colore quando lo tocca
-        if (brightness < 200) {
-          console.log(`Pixel scuro trovato! RGB(${pixel[0]}, ${pixel[1]}, ${pixel[2]}) Luminosità: ${brightness}`);
-        }
-        
         // Considera muro se la luminosità è sotto 200
-        if (brightness < 200) return true;
+        if (brightness < 200) {
+          console.log(`Muro rilevato! RGB(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`);
+          return true;
+        }
       } catch (e) {
         console.log("Errore lettura pixel:", e);
       }
@@ -95,8 +93,8 @@ function movePlayer(dx, dy) {
   const newX = oldX + dx;
   const newY = oldY + dy;
   
-  // CONTROLLA PRIMA di muovere
-  if (isOnBlack(newX, newY, 30, 30)) {
+  // CONTROLLA PRIMA di muovere (giocatore ora è 20x20)
+  if (isOnBlack(newX, newY, 20, 20)) {
     console.log("BLOCCATO! Muro rilevato");
     player.style.left = startX + 'px';
     player.style.top = startY + 'px';
