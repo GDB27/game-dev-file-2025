@@ -104,7 +104,8 @@ function isWall(x, y) {
   try {
     const pixel = ctx.getImageData(x, y, 1, 1).data;
     const brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
-    return brightness < 220; // Molto tollerante
+    // Solo il NERO vero è muro
+    return brightness < 80;
   } catch(e) {
     return false;
   }
