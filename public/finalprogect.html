@@ -129,19 +129,28 @@ function checkCollision(x, y) {
 
 // Muove il giocatore
 function move(dx, dy) {
+  console.log("MOVE chiamato:", dx, dy);
+  
   if (!imageLoaded) {
-    alert("Aspetta che l'immagine si carichi!");
-    return;
+    console.log("Immagine non ancora caricata, muovo comunque...");
   }
   
-  const currentX = parseInt(player.style.left);
-  const currentY = parseInt(player.style.top);
+  let currentX = parseInt(player.style.left);
+  let currentY = parseInt(player.style.top);
+  
+  // Se NaN, usa la posizione iniziale
+  if (isNaN(currentX)) currentX = startX;
+  if (isNaN(currentY)) currentY = startY;
+  
+  console.log("Posizione attuale:", currentX, currentY);
+  
   const newX = currentX + dx;
   const newY = currentY + dy;
+  console.log("Nuova posizione:", newX, newY);
   
-  // Controlla se la nuova posizione tocca un muro
-  if (checkCollision(newX, newY)) {
-    console.log("MURO!");
+  // Se l'immagine è caricata, controlla i muri
+  if (imageLoaded && checkCollision(newX, newY)) {
+    console.log("MURO! Torno all'inizio");
     player.style.left = startX + 'px';
     player.style.top = startY + 'px';
     return;
@@ -150,6 +159,7 @@ function move(dx, dy) {
   // Muovi
   player.style.left = newX + 'px';
   player.style.top = newY + 'px';
+  console.log("Mosso a:", newX, newY);
   
   // Controlla vittoria
   checkWin();
