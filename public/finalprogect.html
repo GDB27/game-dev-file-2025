@@ -27,16 +27,23 @@ body {
   border-radius: 3px;
   left: 30px;
   top: 150px;
+  z-index: 10;
 }
 #goal {
   position: absolute;
   width: 40px;
   height: 40px;
-  background-color: green;
+  background-color: rgba(0, 255, 0, 0.7);
   border: 3px solid darkgreen;
   border-radius: 5px;
   right: 30px;
   bottom: 30px;
+  z-index: 10;
+}
+.wall {
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0.1); /* Rosso semi-trasparente per vedere dove sono */
+  pointer-events: none;
 }
 #controls {
   text-align: center;
@@ -55,103 +62,77 @@ button {
 
 <div id="controls">
   <div style="margin-bottom: 10px;">
-    <strong>Usa i pulsanti o la tastiera: W A S D oppure ↑ ← ↓ →</strong>
+    <strong>Usa WASD o ↑←↓→</strong>
   </div>
   <div>
-    <button onclick="move(0, -3)">↑ Up (W)</button>
+    <button onclick="move(0, -5)">↑ Up (W)</button>
   </div>
   <div>
-    <button onclick="move(-3, 0)">← Left (A)</button>
-    <button onclick="move(0, 3)">↓ Down (S)</button>
-    <button onclick="move(3, 0)">→ Right (D)</button>
+    <button onclick="move(-5, 0)">← Left (A)</button>
+    <button onclick="move(0, 5)">↓ Down (S)</button>
+    <button onclick="move(5, 0)">→ Right (D)</button>
+  </div>
+  <div style="margin-top: 10px;">
+    <small>I muri rossi semi-trasparenti mostrano le hitbox. Posizionali sui muri neri dell'immagine!</small>
   </div>
 </div>
 
 <div id="gameContainer">
-  <canvas id="canvas" width="800" height="600" style="position: absolute; top: 0; left: 0; display: none; pointer-events: none;"></canvas>
   <div id="player"></div>
   <div id="goal"></div>
+  
+  <!-- METTI QUI I TUOI MURI - Posizionali sopra i muri neri dell'immagine -->
+  <!-- Esempio: Muro verticale a sinistra -->
+  <div class="wall" style="left: 120px; top: 0; width: 20px; height: 250px;"></div>
+  
+  <!-- Esempio: Muro orizzontale in alto -->
+  <div class="wall" style="left: 0; top: 120px; width: 300px; height: 20px;"></div>
+  
+  <!-- AGGIUNGI ALTRI MURI QUI seguendo l'immagine del labirinto -->
+  <!-- <div class="wall" style="left: Xpx; top: Ypx; width: Wpx; height: Hpx;"></div> -->
+  
 </div>
 
 <script>
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d', { willReadFrequently: true });
 const player = document.getElementById('player');
 const goal = document.getElementById('goal');
+const walls = document.querySelectorAll('.wall');
 const startX = 30, startY = 150;
 
-let imageLoaded = false;
+// Inizializza posizione
+player.style.left = startX + 'px';
+player.style.top = startY + 'px';
 
-// Carica l'immagine
-const img = new Image();
-img.crossOrigin = "anonymous";
-img.onload = function() {
-  ctx.drawImage(img, 0, 0, 800, 600);
-  imageLoaded = true;
-  console.log("✓ Immagine caricata!");
-};
-img.onerror = function() {
-  console.log("✗ ERRORE: Immagine non trovata!");
-  alert("Immagine myBackground01.jpg non trovata!");
-};
-img.src = 'myBackground01.jpg';
-
-// Controlla se il punto è su un muro nero
-function isWall(x, y) {
-  if (!imageLoaded) return false;
-  if (x < 0 || x >= 800 || y < 0 || y >= 600) return true;
-  
-  try {
-    const pixel = ctx.getImageData(x, y, 1, 1).data;
-    const brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
-    // Solo il NERO vero è muro
-    return brightness < 80;
-  } catch(e) {
-    return false;
-  }
-}
-
-// Controlla collisione con area del giocatore
-function checkCollision(x, y) {
-  const size = 15;
-  const checkPoints = [
-    [x, y], [x+size, y], [x, y+size], [x+size, y+size],
-    [x+size/2, y], [x, y+size/2], [x+size, y+size/2], [x+size/2, y+size],
-    [x+size/2, y+size/2]
-  ];
-  
-  for (let [px, py] of checkPoints) {
-    if (isWall(Math.floor(px), Math.floor(py))) {
-      return true;
-    }
-  }
-  return false;
+// Controlla collisione tra due rettangoli
+function checkCollision(x1, y1, w1, h1, x2, y2, w2, h2) {
+  return !(x1 + w1 < x2 || x1 > x2 + w2 || y1 + h1 < y2 || y1 > y2 + h2);
 }
 
 // Muove il giocatore
 function move(dx, dy) {
-  console.log("MOVE chiamato:", dx, dy);
-  
-  if (!imageLoaded) {
-    console.log("Immagine non ancora caricata, muovo comunque...");
-  }
-  
-  let currentX = parseInt(player.style.left);
-  let currentY = parseInt(player.style.top);
-  
-  // Se NaN, usa la posizione iniziale
-  if (isNaN(currentX)) currentX = startX;
-  if (isNaN(currentY)) currentY = startY;
-  
-  console.log("Posizione attuale:", currentX, currentY);
+  let currentX = parseInt(player.style.left) || startX;
+  let currentY = parseInt(player.style.top) || startY;
   
   const newX = currentX + dx;
   const newY = currentY + dy;
-  console.log("Nuova posizione:", newX, newY);
   
-  // Se l'immagine è caricata, controlla i muri
-  if (imageLoaded && checkCollision(newX, newY)) {
-    console.log("MURO! Torno all'inizio");
+  // Controlla collisione con tutti i muri
+  for (let wall of walls) {
+    const wallX = parseInt(wall.style.left);
+    const wallY = parseInt(wall.style.top);
+    const wallW = parseInt(wall.style.width);
+    const wallH = parseInt(wall.style.height);
+    
+    if (checkCollision(newX, newY, 15, 15, wallX, wallY, wallW, wallH)) {
+      console.log("MURO! Torno all'inizio");
+      player.style.left = startX + 'px';
+      player.style.top = startY + 'px';
+      return;
+    }
+  }
+  
+  // Controlla bordi
+  if (newX < 0 || newX > 785 || newY < 0 || newY > 585) {
     player.style.left = startX + 'px';
     player.style.top = startY + 'px';
     return;
@@ -160,36 +141,34 @@ function move(dx, dy) {
   // Muovi
   player.style.left = newX + 'px';
   player.style.top = newY + 'px';
-  console.log("Mosso a:", newX, newY);
   
   // Controlla vittoria
   checkWin();
 }
 
-// Controlla se ha raggiunto il traguardo
+// Controlla vittoria
 function checkWin() {
   const px = parseInt(player.style.left);
   const py = parseInt(player.style.top);
-  const gx = parseInt(goal.style.left || (800 - 70));
-  const gy = parseInt(goal.style.top || (600 - 70));
+  const gx = parseInt(goal.style.left) || 730;
+  const gy = parseInt(goal.style.top) || 530;
   
-  if (Math.abs(px - gx) < 30 && Math.abs(py - gy) < 30) {
+  if (checkCollision(px, py, 15, 15, gx, gy, 40, 40)) {
     alert("🎉 HAI VINTO!");
     player.style.left = startX + 'px';
     player.style.top = startY + 'px';
   }
 }
 
-// Controllo tastiera (WASD e frecce)
+// Controllo tastiera
 document.addEventListener('keydown', function(e) {
-  e.preventDefault(); // Previene lo scroll della pagina
-  if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') move(0, -3);
-  if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') move(0, 3);
-  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') move(-3, 0);
-  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') move(3, 0);
+  if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { e.preventDefault(); move(0, -5); }
+  if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { e.preventDefault(); move(0, 5); }
+  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { e.preventDefault(); move(-5, 0); }
+  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { e.preventDefault(); move(5, 0); }
 });
 
-console.log("✓ Gioco pronto! Usa WASD o frecce per muoverti");
+console.log("✓ Gioco pronto!");
 </script>
 
 </body>
