@@ -54,18 +54,21 @@ button {
 <h1 style="text-align: center; color: red;">T4A04 Maze by Fred</h1>
 
 <div id="controls">
-  <div>
-    <button onclick="move(0, -3)">↑ Up</button>
+  <div style="margin-bottom: 10px;">
+    <strong>Usa i pulsanti o la tastiera: W A S D oppure ↑ ← ↓ →</strong>
   </div>
   <div>
-    <button onclick="move(-3, 0)">← Left</button>
-    <button onclick="move(0, 3)">↓ Down</button>
-    <button onclick="move(3, 0)">→ Right</button>
+    <button onclick="move(0, -3)">↑ Up (W)</button>
+  </div>
+  <div>
+    <button onclick="move(-3, 0)">← Left (A)</button>
+    <button onclick="move(0, 3)">↓ Down (S)</button>
+    <button onclick="move(3, 0)">→ Right (D)</button>
   </div>
 </div>
 
 <div id="gameContainer">
-  <canvas id="canvas" width="800" height="600" style="position: absolute; top: 0; left: 0; display: none;"></canvas>
+  <canvas id="canvas" width="800" height="600" style="position: absolute; top: 0; left: 0; display: none; pointer-events: none;"></canvas>
   <div id="player"></div>
   <div id="goal"></div>
 </div>
@@ -166,15 +169,16 @@ function checkWin() {
   }
 }
 
-// Controllo tastiera
+// Controllo tastiera (WASD e frecce)
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'ArrowUp' || e.key === 'w') move(0, -3);
-  if (e.key === 'ArrowDown' || e.key === 's') move(0, 3);
-  if (e.key === 'ArrowLeft' || e.key === 'a') move(-3, 0);
-  if (e.key === 'ArrowRight' || e.key === 'd') move(3, 0);
+  e.preventDefault(); // Previene lo scroll della pagina
+  if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') move(0, -3);
+  if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') move(0, 3);
+  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') move(-3, 0);
+  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') move(3, 0);
 });
 
-console.log("Gioco pronto! Usa i pulsanti o le frecce della tastiera");
+console.log("✓ Gioco pronto! Usa WASD o frecce per muoverti");
 </script>
 
 </body>
