@@ -33,27 +33,25 @@ img.src = 'myBackground01.jpg';
 
 // Controlla se tocca nero
 function isOnBlack(x, y, w, h) {
-  // Controlla molti più punti: angoli, bordi e centro
-  const points = [
-    // Angoli
-    [x, y], [x+w, y], [x, y+h], [x+w, y+h],
-    // Bordi superiore e inferiore
-    [x+w/4, y], [x+w/2, y], [x+3*w/4, y],
-    [x+w/4, y+h], [x+w/2, y+h], [x+3*w/4, y+h],
-    // Bordi sinistro e destro
-    [x, y+h/4], [x, y+h/2], [x, y+3*h/4],
-    [x+w, y+h/4], [x+w, y+h/2], [x+w, y+3*h/4],
-    // Centro
-    [x+w/2, y+h/2]
-  ];
+  // Controlla TUTTI i pixel lungo i bordi del quadrato
+  const points = [];
+  
+  // Bordo superiore (ogni 3 pixel)
+  for (let i = 0; i <= w; i += 3) points.push([x+i, y]);
+  // Bordo inferiore (ogni 3 pixel)
+  for (let i = 0; i <= w; i += 3) points.push([x+i, y+h]);
+  // Bordo sinistro (ogni 3 pixel)
+  for (let i = 0; i <= h; i += 3) points.push([x, y+i]);
+  // Bordo destro (ogni 3 pixel)
+  for (let i = 0; i <= h; i += 3) points.push([x+w, y+i]);
   
   for (let [px, py] of points) {
     px = Math.floor(px);
     py = Math.floor(py);
     if (px >= 0 && px < 900 && py >= 0 && py < 600) {
       const pixel = ctx.getImageData(px, py, 1, 1).data;
-      // Tolleranza aumentata: considera nero se RGB < 100 (invece di 50)
-      if (pixel[0] < 100 && pixel[1] < 100 && pixel[2] < 100) return true;
+      // Tolleranza aumentata: considera nero se RGB < 120
+      if (pixel[0] < 120 && pixel[1] < 120 && pixel[2] < 120) return true;
     }
   }
   return false;
