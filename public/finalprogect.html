@@ -90,15 +90,23 @@ function checkGoal() {
 
 // Muove giocatore
 function movePlayer(dx, dy) {
-  const x = parseInt(player.style.left) + dx;
-  const y = parseInt(player.style.top) + dy;
-  player.style.left = x + 'px';
-  player.style.top = y + 'px';
+  const oldX = parseInt(player.style.left);
+  const oldY = parseInt(player.style.top);
+  const newX = oldX + dx;
+  const newY = oldY + dy;
   
-  if (isOnBlack(x, y, 30, 30)) {
+  // CONTROLLA PRIMA di muovere
+  if (isOnBlack(newX, newY, 30, 30)) {
+    console.log("BLOCCATO! Muro rilevato");
     player.style.left = startX + 'px';
     player.style.top = startY + 'px';
+    return;
   }
+  
+  // Se non c'è muro, muovi
+  player.style.left = newX + 'px';
+  player.style.top = newY + 'px';
+  
   checkGoal();
 }
 </script>
