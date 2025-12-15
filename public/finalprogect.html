@@ -28,7 +28,15 @@ const startX = 30, startY = 30;
 
 // Carica immagine labirinto
 const img = new Image();
-img.onload = () => ctx.drawImage(img, 0, 0, 900, 600);
+img.crossOrigin = "anonymous";
+img.onload = () => {
+  ctx.drawImage(img, 0, 0, 900, 600);
+  console.log("Immagine caricata sul canvas");
+};
+img.onerror = () => {
+  console.log("ERRORE: Immagine non trovata!");
+  alert("Immagine myBackground01.jpg non trovata! Metti l'immagine nella stessa cartella.");
+};
 img.src = 'myBackground01.jpg';
 
 // Controlla se tocca nero o colori scuri
@@ -36,24 +44,34 @@ function isOnBlack(x, y, w, h) {
   // Controlla TUTTI i pixel lungo i bordi del quadrato
   const points = [];
   
-  // Bordo superiore (ogni 3 pixel)
-  for (let i = 0; i <= w; i += 3) points.push([x+i, y]);
-  // Bordo inferiore (ogni 3 pixel)
-  for (let i = 0; i <= w; i += 3) points.push([x+i, y+h]);
-  // Bordo sinistro (ogni 3 pixel)
-  for (let i = 0; i <= h; i += 3) points.push([x, y+i]);
-  // Bordo destro (ogni 3 pixel)
-  for (let i = 0; i <= h; i += 3) points.push([x+w, y+i]);
+  // Bordo superiore (ogni 2 pixel per più precisione)
+  for (let i = 0; i <= w; i += 2) points.push([x+i, y]);
+  // Bordo inferiore
+  for (let i = 0; i <= w; i += 2) points.push([x+i, y+h]);
+  // Bordo sinistro
+  for (let i = 0; i <= h; i += 2) points.push([x, y+i]);
+  // Bordo destro
+  for (let i = 0; i <= h; i += 2) points.push([x+w, y+i]);
   
   for (let [px, py] of points) {
     px = Math.floor(px);
     py = Math.floor(py);
     if (px >= 0 && px < 900 && py >= 0 && py < 600) {
-      const pixel = ctx.getImageData(px, py, 1, 1).data;
-      // Calcola la luminosità del pixel (media RGB)
-      const brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
-      // Considera muro se la luminosità è sotto 180 (molto più tollerante!)
-      if (brightness < 180) return true;
+      try {
+        const pixel = ctx.getImageData(px, py, 1, 1).data;
+        // Calcola la luminosità del pixel (media RGB)
+        const brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
+        
+        // DEBUG: mostra il colore quando lo tocca
+        if (brightness < 200) {
+          console.log(`Pixel scuro trovato! RGB(${pixel[0]}, ${pixel[1]}, ${pixel[2]}) Luminosità: ${brightness}`);
+        }
+        
+        // Considera muro se la luminosità è sotto 200
+        if (brightness < 200) return true;
+      } catch (e) {
+        console.log("Errore lettura pixel:", e);
+      }
     }
   }
   return false;
