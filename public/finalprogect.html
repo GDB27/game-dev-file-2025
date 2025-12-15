@@ -2,111 +2,179 @@
 <html>
 <head>
 <title>Labirinto</title>
+<style>
+body {
+  margin: 0;
+  background-color: #f0f0f0;
+  font-family: Arial;
+}
+#gameContainer {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  margin: 20px auto;
+  background-image: url('myBackground01.jpg');
+  background-size: cover;
+  background-position: center;
+  border: 3px solid #333;
+}
+#player {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background-color: blue;
+  border: 2px solid darkblue;
+  border-radius: 3px;
+  left: 30px;
+  top: 150px;
+}
+#goal {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-color: green;
+  border: 3px solid darkgreen;
+  border-radius: 5px;
+  right: 30px;
+  bottom: 30px;
+}
+#controls {
+  text-align: center;
+  padding: 20px;
+}
+button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
 </head>
-<body id="myBody" style="background-repeat:repeat; background-size: 80%; margin: 0;" background="myBackground01.jpg">
-<h1 align="center"><font color="red">T4A04 Maze by Fred</font></h1>
+<body>
+<h1 style="text-align: center; color: red;">T4A04 Maze by Fred</h1>
 
-<div style="text-align: center; padding: 10px;">
-<input type="button" value="Left" onclick="movePlayer(-5, 0)">
-<input type="button" value="Up" onclick="movePlayer(0, -5)">
-<input type="button" value="Down" onclick="movePlayer(0, 5)">
-<input type="button" value="Right" onclick="movePlayer(5, 0)">
+<div id="controls">
+  <div>
+    <button onclick="move(0, -3)">↑ Up</button>
+  </div>
+  <div>
+    <button onclick="move(-3, 0)">← Left</button>
+    <button onclick="move(0, 3)">↓ Down</button>
+    <button onclick="move(3, 0)">→ Right</button>
+  </div>
 </div>
 
-<div style="position: relative; width: 900px; height: 600px; margin: 20px auto;">
-  <canvas id="mazeCanvas" width="900" height="600" style="position: absolute; opacity: 0;"></canvas>
-  <div id="player" style="position: absolute; width: 20px; height: 20px; left: 30px; top: 30px; background-color: blue; border: 2px solid darkblue; border-radius: 5px; z-index: 3;"></div>
-  <div id="goal" style="position: absolute; width: 50px; height: 50px; left: 820px; top: 520px; background-color: green; border: 3px solid darkgreen; border-radius: 5px; z-index: 2;"></div>
+<div id="gameContainer">
+  <canvas id="canvas" width="800" height="600" style="position: absolute; top: 0; left: 0; display: none;"></canvas>
+  <div id="player"></div>
+  <div id="goal"></div>
 </div>
 
 <script>
-const canvas = document.getElementById('mazeCanvas');
+const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
 const player = document.getElementById('player');
 const goal = document.getElementById('goal');
-const startX = 30, startY = 30;
+const startX = 30, startY = 150;
 
-// Carica immagine labirinto
+let imageLoaded = false;
+
+// Carica l'immagine
 const img = new Image();
 img.crossOrigin = "anonymous";
-img.onload = () => {
-  ctx.drawImage(img, 0, 0, 900, 600);
-  console.log("Immagine caricata sul canvas");
+img.onload = function() {
+  ctx.drawImage(img, 0, 0, 800, 600);
+  imageLoaded = true;
+  console.log("✓ Immagine caricata!");
 };
-img.onerror = () => {
-  console.log("ERRORE: Immagine non trovata!");
-  alert("Immagine myBackground01.jpg non trovata! Metti l'immagine nella stessa cartella.");
+img.onerror = function() {
+  console.log("✗ ERRORE: Immagine non trovata!");
+  alert("Immagine myBackground01.jpg non trovata!");
 };
 img.src = 'myBackground01.jpg';
 
-// Controlla se tocca nero o colori scuri
-function isOnBlack(x, y, w, h) {
-  // Controlla TUTTI i pixel lungo i bordi del quadrato
-  const points = [];
+// Controlla se il punto è su un muro nero
+function isWall(x, y) {
+  if (!imageLoaded) return false;
+  if (x < 0 || x >= 800 || y < 0 || y >= 600) return true;
   
-  // Bordo superiore (ogni pixel)
-  for (let i = 0; i <= w; i += 1) points.push([x+i, y]);
-  // Bordo inferiore
-  for (let i = 0; i <= w; i += 1) points.push([x+i, y+h]);
-  // Bordo sinistro
-  for (let i = 0; i <= h; i += 1) points.push([x, y+i]);
-  // Bordo destro
-  for (let i = 0; i <= h; i += 1) points.push([x+w, y+i]);
+  try {
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
+    return brightness < 220; // Molto tollerante
+  } catch(e) {
+    return false;
+  }
+}
+
+// Controlla collisione con area del giocatore
+function checkCollision(x, y) {
+  const size = 15;
+  const checkPoints = [
+    [x, y], [x+size, y], [x, y+size], [x+size, y+size],
+    [x+size/2, y], [x, y+size/2], [x+size, y+size/2], [x+size/2, y+size],
+    [x+size/2, y+size/2]
+  ];
   
-  for (let [px, py] of points) {
-    px = Math.floor(px);
-    py = Math.floor(py);
-    if (px >= 0 && px < 900 && py >= 0 && py < 600) {
-      try {
-        const pixel = ctx.getImageData(px, py, 1, 1).data;
-        // Calcola la luminosità del pixel (media RGB)
-        const brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
-        
-        // Considera muro se la luminosità è sotto 200
-        if (brightness < 200) {
-          console.log(`Muro rilevato! RGB(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`);
-          return true;
-        }
-      } catch (e) {
-        console.log("Errore lettura pixel:", e);
-      }
+  for (let [px, py] of checkPoints) {
+    if (isWall(Math.floor(px), Math.floor(py))) {
+      return true;
     }
   }
   return false;
 }
 
-// Controlla vittoria
-function checkGoal() {
-  const pr = player.getBoundingClientRect();
-  const gr = goal.getBoundingClientRect();
-  if (!(pr.right < gr.left || pr.left > gr.right || pr.bottom < gr.top || pr.top > gr.bottom)) {
-    alert('Hai Vinto!');
-    player.style.left = startX + 'px';
-    player.style.top = startY + 'px';
+// Muove il giocatore
+function move(dx, dy) {
+  if (!imageLoaded) {
+    alert("Aspetta che l'immagine si carichi!");
+    return;
   }
-}
-
-// Muove giocatore
-function movePlayer(dx, dy) {
-  const oldX = parseInt(player.style.left);
-  const oldY = parseInt(player.style.top);
-  const newX = oldX + dx;
-  const newY = oldY + dy;
   
-  // CONTROLLA PRIMA di muovere (giocatore ora è 20x20)
-  if (isOnBlack(newX, newY, 20, 20)) {
-    console.log("BLOCCATO! Muro rilevato");
+  const currentX = parseInt(player.style.left);
+  const currentY = parseInt(player.style.top);
+  const newX = currentX + dx;
+  const newY = currentY + dy;
+  
+  // Controlla se la nuova posizione tocca un muro
+  if (checkCollision(newX, newY)) {
+    console.log("MURO!");
     player.style.left = startX + 'px';
     player.style.top = startY + 'px';
     return;
   }
   
-  // Se non c'è muro, muovi
+  // Muovi
   player.style.left = newX + 'px';
   player.style.top = newY + 'px';
   
-  checkGoal();
+  // Controlla vittoria
+  checkWin();
 }
+
+// Controlla se ha raggiunto il traguardo
+function checkWin() {
+  const px = parseInt(player.style.left);
+  const py = parseInt(player.style.top);
+  const gx = parseInt(goal.style.left || (800 - 70));
+  const gy = parseInt(goal.style.top || (600 - 70));
+  
+  if (Math.abs(px - gx) < 30 && Math.abs(py - gy) < 30) {
+    alert("🎉 HAI VINTO!");
+    player.style.left = startX + 'px';
+    player.style.top = startY + 'px';
+  }
+}
+
+// Controllo tastiera
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowUp' || e.key === 'w') move(0, -3);
+  if (e.key === 'ArrowDown' || e.key === 's') move(0, 3);
+  if (e.key === 'ArrowLeft' || e.key === 'a') move(-3, 0);
+  if (e.key === 'ArrowRight' || e.key === 'd') move(3, 0);
+});
+
+console.log("Gioco pronto! Usa i pulsanti o le frecce della tastiera");
 </script>
 
 </body>
