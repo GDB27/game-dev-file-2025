@@ -1,112 +1,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Maze by Fred - Pixel Version</title>
+<title>T4A04 Maze by Fred</title>
 </head>
 
-<body id="myBody" style="background-color: #cccccc;">
+<!-- Impostiamo lo sfondo visibile qui -->
+<body id="myBody" background="myBackground01.jpg" style="background-repeat: no-repeat; background-size: 800px 600px;">
 
-<h1 align="center"><font color="red">T4A04 Maze Pixel Collision</font></h1>
+<h1 align="center"><font color="red">T4A04 Maze by Fred (Pixel Version)</font></h1>
 
 <script>
    // VARIABILI GLOBALI
-   let myGlobalX = 0;
-   let myClock;
+   let myGlobalX = 0
+   let myClock
+
+   // SETUP PER LEGGERE I COLORI (NON TOCCARE)
+   // Creiamo un "occhio" invisibile (canvas) per guardare i colori dell'immagine di sfondo
+   let myCanvas = document.createElement('canvas');
+   let myCtx = myCanvas.getContext('2d');
+   let myBackground = new Image();
    
-   // Creiamo un canvas in memoria per leggere i pixel dell'immagine
-   let canvas = document.createElement('canvas');
-   let ctx = canvas.getContext('2d');
-   let mazeImg = new Image();
+   // CARICA L'IMMAGINE DEL LABIRINTO IN MEMORIA
+   myBackground.src = 'myBackground01.jpg'; 
    
-   // IMPORTANTE: Sostituisci 'maze.jpg' con il nome della tua immagine del labirinto
-   // L'immagine deve avere i muri NERI e il percorso BIANCO/CHIARO
-   mazeImg.src = 'maze.jpg'; 
-   
-   mazeImg.onload = function() {
-       // Quando l'immagine è carica, ridimensioniamo il canvas e la disegniamo
-       canvas.width = mazeImg.width;
-       canvas.height = mazeImg.height;
-       ctx.drawImage(mazeImg, 0, 0, mazeImg.width, mazeImg.height);
-       
-       // Impostiamo l'immagine anche come sfondo visibile del div contenitore
-       document.getElementById('myMazeDiv').style.backgroundImage = "url('" + mazeImg.src + "')";
-       document.getElementById('myMazeDiv').style.width = mazeImg.width + "px";
-       document.getElementById('myMazeDiv').style.height = mazeImg.height + "px";
+   myBackground.onload = function() {
+       // Quando l'immagine è pronta, diciamo al canvas quanto è grande
+       myCanvas.width = 800;  // Larghezza del gioco
+       myCanvas.height = 600; // Altezza del gioco
+       // Disegniamo l'immagine nella memoria del computer
+       myCtx.drawImage(myBackground, 0, 0, 800, 600);
    };
 
-   // FUNZIONE DI CONTROLLO COLORE
-   function myCheckPixel(){
-      let player = document.getElementById('myImg01');
-      
-      // Otteniamo la posizione del giocatore
-      // Aggiungiamo +50 e +40 per controllare il CENTRO del giocatore, non l'angolo in alto a sinistra
-      let x = parseInt(player.style.left) + 25; 
-      let y = parseInt(player.style.top) + 25; 
+   // FUNZIONE PER CONTROLLARE SE TOCCHI IL NERO
+   function myCheckHit(){
+       let player = document.getElementById('myImg01');
+       
+       // Calcoliamo il centro del personaggio (più preciso dell'angolo)
+       // parseInt trasforma "50px" in 50
+       let x = parseInt(player.style.left) + 20; 
+       let y = parseInt(player.style.top) + 20; 
 
-      // Leggiamo il colore del pixel in quella posizione (R, G, B, Alpha)
-      try {
-          let pixelData = ctx.getImageData(x, y, 1, 1).data;
-          let red = pixelData[0];
-          let green = pixelData[1];
-          let blue = pixelData[2];
+       try {
+           // Prendi il colore sotto il personaggio
+           let pixel = myCtx.getImageData(x, y, 1, 1).data;
+           
+           // pixel[0] è Rosso, pixel[1] è Verde, pixel[2] è Blu.
+           // Se la somma è bassa, il colore è SCURO (Muro)
+           let brightness = pixel[0] + pixel[1] + pixel[2];
 
-          // Calcoliamo la luminosità (media dei colori)
-          // Se è vicino a 0 è nero/scuro. Se è vicino a 255 è bianco.
-          let brightness = (red + green + blue) / 3;
-
-          // SE IL COLORE E' SCURO (Muro) -> RESET
-          if (brightness < 100) { 
-             console.log("Muro colpito! Luminosità: " + brightness);
-             // Reset posizione
-             player.style.left = '20px';
-             player.style.top = '20px';
-          }
-          
-          // SE IL COLORE E' VERDE O ROSSO PURO (Opzionale: Vittoria)
-          // Esempio: se c'è un pixel verde puro (R<50, G>200, B<50) vinci
-          if (red < 50 && green > 200 && blue < 50) {
-              alert("You Win!");
-              location.reload();
-          }
-
-      } catch (e) {
-          // Questo errore appare se testi il file in locale senza un server (CORS issue)
-          console.log("Errore lettura pixel (probabilmente CORS): " + e);
-      }
+           // Se brightness è basso (es. meno di 100), è un muro scuro -> RESET
+           // Nota: Se il gioco resetta sempre, abbassa questo numero (es. metti < 20)
+           if (brightness < 100) { 
+               console.log('Hai toccato un muro!');
+               // RESET ALLA POSIZIONE DI PARTENZA
+               player.style.left = '50px';
+               player.style.top = '190px';
+           }
+           
+       } catch(error) {
+           // Questo errore appare solo se lo usi in locale senza server. Su GitHub sparirà.
+           console.log('Sicurezza Browser (CORS): Impossibile leggere i colori in locale.');
+       }
    }
 
-   // Movimento
-   function move(dir) {
-       let player = document.getElementById('myImg01');
-       let step = 10;
-       
-       if(dir == 'right') player.style.left = parseInt(player.style.left) + step + 'px';
-       if(dir == 'left')  player.style.left = parseInt(player.style.left) - step + 'px';
-       if(dir == 'down')  player.style.top  = parseInt(player.style.top) + step + 'px';
-       if(dir == 'up')    player.style.top  = parseInt(player.style.top) - step + 'px';
-       
-       myCheckPixel();
+   // FUNZIONE DI MOVIMENTO UNICA
+   // Sposta l'immagine e controlla subito se hai sbattuto
+   function myMove(dir) {
+       let myImg = document.getElementById('myImg01');
+       let currentLeft = parseInt(myImg.style.left);
+       let currentTop = parseInt(myImg.style.top);
+
+       if (dir == 'right') {
+           myImg.style.left = (currentLeft + 10) + 'px';
+       }
+       if (dir == 'left') {
+           myImg.style.left = (currentLeft - 10) + 'px';
+       }
+       if (dir == 'up') {
+           myImg.style.top = (currentTop - 10) + 'px';
+       }
+       if (dir == 'down') {
+           myImg.style.top = (currentTop + 10) + 'px';
+       }
+
+       // Dopo essersi mossi, controlliamo i colori
+       myCheckHit();
    }
 
 </script>
 
+
+<!-- PULSANTI -->
+<!-- Ho collegato i pulsanti alla funzione myMove() che è più sicura -->
+
 <div align="center">
-    <input type="button" value="Up" onclick="move('up')"><br>
-    <input type="button" value="Left" onclick="move('left')">
-    <input type="button" value="Right" onclick="move('right')">
-    <input type="button" value="Down" onclick="move('down')">
+    <input type="button" value="Up" ontouchstart="{myMove('up'); event.preventDefault();}" onclick="myMove('up')">
+    <br>
+    <input type="button" value="Left" ontouchstart="{myMove('left'); event.preventDefault();}" onclick="myMove('left')">
+    <input type="button" value="Right" ontouchstart="{myMove('right'); event.preventDefault();}" onclick="myMove('right')">
+    <br>
+    <input type="button" value="Down" ontouchstart="{myMove('down'); event.preventDefault();}" onclick="myMove('down')">
 </div>
 
-<br>
+<br><br>
 
-<div id="myMazeDiv" style="position:relative; margin: 0 auto; border: 2px solid black;">
-    
-    <img id="myImg01" src="https://upload.wikimedia.org/wikipedia/commons/2/22/Earth_Western_Hemisphere_transparent_background.png" 
-         style="position:absolute; width:50px; height:50px; left:20px; top:20px; z-index:10;">
+<!-- IL TUO PERSONAGGIO -->
+<!-- style.left e style.top DEVONO essere scritti qui per funzionare subito -->
+<img id="myImg01" src="myImgNew.jpg" style="position:absolute; width:100px; height:80px; left:50px; top:190px; z-index: 10;">
 
-</div>
+<!-- FINE DEL GIOCO (Esempio) -->
+<!-- Puoi lasciare un'immagine traguardo se vuoi -->
+<img id="myImg04" src="myImgNew.jpg" style="position:absolute; width:50px; height:50px; left:700px; top:400px; opacity: 0.5;">
 
-<p align="center">Nota: I muri devono essere neri o molto scuri nell'immagine.</p>
 
 </body>
 </html>
