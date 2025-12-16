@@ -1,175 +1,95 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Labirinto</title>
-<style>
-body {
-  margin: 0;
-  background-color: #f0f0f0;
-  font-family: Arial;
-}
-#gameContainer {
-  position: relative;
-  width: 800px;
-  height: 600px;
-  margin: 20px auto;
-  background-image: url('myBackground01.jpg');
-  background-size: cover;
-  background-position: center;
-  border: 3px solid #333;
-}
-#player {
-  position: absolute;
-  width: 15px;
-  height: 15px;
-  background-color: blue;
-  border: 2px solid darkblue;
-  border-radius: 3px;
-  left: 30px;
-  top: 150px;
-  z-index: 10;
-}
-#goal {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  background-color: rgba(0, 255, 0, 0.7);
-  border: 3px solid darkgreen;
-  border-radius: 5px;
-  right: 30px;
-  bottom: 30px;
-  z-index: 10;
-}
-.wall {
-  position: absolute;
-  background-color: rgba(255, 0, 0, 0.1); /* Rosso semi-trasparente per vedere dove sono */
-  pointer-events: none;
-}
-#controls {
-  text-align: center;
-  padding: 20px;
-}
-button {
-  margin: 5px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-</style>
-</head>
-<body>
-<h1 style="text-align: center; color: red;">T4A04 Maze by Fred</h1>
+<body id="myBody" style="background-repeat:repeat; background-size: 80%" background="myBackground01.jpg">
 
-<div id="controls">
-  <div style="margin-bottom: 10px;">
-    <strong>Usa WASD o ↑←↓→</strong>
-  </div>
-  <div>
-    <button onclick="move(0, -5)">↑ Up (W)</button>
-  </div>
-  <div>
-    <button onclick="move(-5, 0)">← Left (A)</button>
-    <button onclick="move(0, 5)">↓ Down (S)</button>
-    <button onclick="move(5, 0)">→ Right (D)</button>
-  </div>
-  <div style="margin-top: 10px;">
-    <small>I muri rossi semi-trasparenti mostrano le hitbox. Posizionali sui muri neri dell'immagine!</small>
-  </div>
-</div>
+<h1 align="center"><font color="red">T4A04 Maze by Fred</font></h1>
 
-<div id="gameContainer">
-  <div id="player"></div>
-  <div id="goal"></div>
-  
-  <!-- METTI QUI I TUOI MURI - Posizionali sopra i muri neri dell'immagine -->
-  <!-- Esempio: Muro verticale a sinistra -->
-  <div class="wall" style="left: 120px; top: 0; width: 20px; height: 250px;"></div>
-  
-  <!-- Esempio: Muro orizzontale in alto -->
-  <div class="wall" style="left: 0; top: 120px; width: 300px; height: 20px;"></div>
-  
-  <!-- AGGIUNGI ALTRI MURI QUI seguendo l'immagine del labirinto -->
-  <!-- <div class="wall" style="left: Xpx; top: Ypx; width: Wpx; height: Hpx;"></div> -->
-  
-</div>
 
 <script>
-const player = document.getElementById('player');
-const goal = document.getElementById('goal');
-const walls = document.querySelectorAll('.wall');
-const startX = 30, startY = 150;
 
-// Inizializza posizione
-player.style.left = startX + 'px';
-player.style.top = startY + 'px';
+   // global variables here
+   let myGlobalX = 0
+   let myClock
 
-// Controlla collisione tra due rettangoli
-function checkCollision(x1, y1, w1, h1, x2, y2, w2, h2) {
-  return !(x1 + w1 < x2 || x1 > x2 + w2 || y1 + h1 < y2 || y1 > y2 + h2);
+
+   // global functions here
+function myHitOther(my1,my2){
+   left1   = parseInt(document.getElementById(my1).style.left)
+   right1  = left1 + parseInt(document.getElementById(my1).style.width)
+   top1    = parseInt(document.getElementById(my1).style.top)   
+   bottom1 = top1   + parseInt(document.getElementById(my1).style.height)
+   left2   = parseInt(document.getElementById(my2).style.left)
+   right2  = left2 + parseInt(document.getElementById(my2).style.width)
+   top2    = parseInt(document.getElementById(my2).style.top)   
+   bottom2 = top2   + parseInt(document.getElementById(my2).style.height)
+   if ((right1  >=  left2  ) &&      	   
+       (bottom1 >=  top2   ) &&
+       (left1   <=  right2 ) &&
+       (top1    <=  bottom2) ){
+       return true
+   }
 }
 
-// Muove il giocatore
-function move(dx, dy) {
-  let currentX = parseInt(player.style.left) || startX;
-  let currentY = parseInt(player.style.top) || startY;
-  
-  const newX = currentX + dx;
-  const newY = currentY + dy;
-  
-  // Controlla collisione con tutti i muri
-  for (let wall of walls) {
-    const wallX = parseInt(wall.style.left);
-    const wallY = parseInt(wall.style.top);
-    const wallW = parseInt(wall.style.width);
-    const wallH = parseInt(wall.style.height);
-    
-    if (checkCollision(newX, newY, 15, 15, wallX, wallY, wallW, wallH)) {
-      console.log("MURO! Torno all'inizio");
-      player.style.left = startX + 'px';
-      player.style.top = startY + 'px';
-      return;
-    }
-  }
-  
-  // Controlla bordi
-  if (newX < 0 || newX > 785 || newY < 0 || newY > 585) {
-    player.style.left = startX + 'px';
-    player.style.top = startY + 'px';
-    return;
-  }
-  
-  // Muovi
-  player.style.left = newX + 'px';
-  player.style.top = newY + 'px';
-  
-  // Controlla vittoria
-  checkWin();
+
+function myCheckHit(){
+
+   if ( myHitOther('myImg01','myImg02') ){
+       //alert('you lose')
+      document.getElementById('myImg01').style.left = '20px'
+   }   
+   
+   if ( myHitOther('myImg01','myImg03') ){
+       //alert('you lose')
+      document.getElementById('myImg01').style.left = '20px'
+   }   
+   
+
+
+   // YOU WIN and go to next level!
+
+   if ( myHitOther('myImg01','myImg04') ){
+       alert('You Win, now go to the next level')
+      document.getElementById('myImg01').style.left = '20px'
+      location = 'https://www.google.ca'
+   }
+
+   // more if statements here
+
 }
 
-// Controlla vittoria
-function checkWin() {
-  const px = parseInt(player.style.left);
-  const py = parseInt(player.style.top);
-  const gx = parseInt(goal.style.left) || 730;
-  const gy = parseInt(goal.style.top) || 530;
-  
-  if (checkCollision(px, py, 15, 15, gx, gy, 40, 40)) {
-    alert("🎉 HAI VINTO!");
-    player.style.left = startX + 'px';
-    player.style.top = startY + 'px';
-  }
-}
 
-// Controllo tastiera
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { e.preventDefault(); move(0, -5); }
-  if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { e.preventDefault(); move(0, 5); }
-  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { e.preventDefault(); move(-5, 0); }
-  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { e.preventDefault(); move(5, 0); }
-});
-
-console.log("✓ Gioco pronto!");
 </script>
 
+
+
+
+<input type="button" value="Auto Background Left" onclick="{
+  clearInterval(myClock)
+  let myTemp = '100px 0px'
+  myClock = setInterval(function(){
+      myGlobalX -= 5
+      myTemp =  myGlobalX + 'px 0px'
+      document.getElementById('myBody').style.backgroundPosition = myTemp
+  }, 100)
+    
+}">
+
+
+<input type="button" value="Right" ontouchstart="{this.click(); event.preventDefault();}" onclick="{
+  document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px'
+  myCheckHit()     // checks for all collisions
+}">
+
+<input type="button" value="Down" ontouchstart="{this.click(); event.preventDefault();}" onclick="{
+  document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) + 10 + 'px'
+  myCheckHit()     // checks for all collisions
+}"><br><br>
+
+
+
+
+<img id="myImg01" src="myImgNew.jpg" style="position:absolute; width:100px; height:80px; left: 50px; top:190px;">
+<img id="myImg02" src="myImgNew.jpg" style="position:absolute; width:10px; height:200px; left:350px; top:90px;">
+<img id="myImg03" src="myImgNew.jpg" style="position:absolute; width:200px; height:10px; left:500px; top:400px;">
+<img id="myImg04" src="myImgNew.jpg" style="position:absolute; width:100px; height:80px; left:800px; top:400px;">
+
+
 </body>
-</html>
