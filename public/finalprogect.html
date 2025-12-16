@@ -86,7 +86,23 @@
        // Dopo essersi mossi, controlliamo i colori
        myCheckHit();
    }
-
+// Aggiungi l'event listener per la tastiera
+document.addEventListener('keydown', function(event) {
+    let key = event.key.toLowerCase();
+    
+    if (key == 'w') {
+        myMove('up');
+    }
+    else if (key == 'a') {
+        myMove('left');
+    }
+    else if (key == 's') {
+        myMove('down');
+    }
+    else if (key == 'd') {
+        myMove('right');
+    }
+});
 </script>
 
 
