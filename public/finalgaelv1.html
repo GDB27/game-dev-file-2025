@@ -1,0 +1,77 @@
+<body id="myBody" style="background-color: white;">
+
+<h1 align="center"><font color="red">T4A04 Maze by Fred</font></h1>
+
+<script>
+    // Variabili globali
+    let myGlobalX = 0
+    let myClock
+
+    // Funzione per il controllo delle collisioni
+    function myHitOther(my1, my2) {
+        let el1 = document.getElementById(my1);
+        let el2 = document.getElementById(my2);
+        
+        if (!el1 || !el2) return false;
+
+        let left1 = parseInt(el1.style.left)
+        let right1 = left1 + parseInt(el1.style.width)
+        let top1 = parseInt(el1.style.top)
+        let bottom1 = top1 + parseInt(el1.style.height)
+        
+        let left2 = parseInt(el2.style.left)
+        let right2 = left2 + parseInt(el2.style.width)
+        let top2 = parseInt(el2.style.top)
+        let bottom2 = top2 + parseInt(el2.style.height)
+        
+        if ((right1 >= left2) &&
+            (bottom1 >= top2) &&
+            (left1 <= right2) &&
+            (top1 <= bottom2)) {
+            return true
+        }
+        return false
+    }
+
+    function myCheckHit() {
+        // Controllo collisioni con i muri (DIV neri)
+        if (myHitOther('myImg01', 'myImg02') || 
+            myHitOther('myImg01', 'myImg03') || 
+            myHitOther('myImg01', 'myImg05') || 
+            myHitOther('myImg01', 'myImg06')) {
+            document.getElementById('myImg01').style.left = '20px'
+        }
+
+        // Controllo collisione con il traguardo (Immagine finale)
+        if (myHitOther('myImg01', 'myImg04')) {
+            alert('Hai Vinto! Vai al prossimo livello.')
+            document.getElementById('myImg01').style.left = '20px'
+            location = 'https://www.google.com'
+        }
+    }
+</script>
+
+<!-- Bottoni di movimento -->
+<input type="button" value="Destra" onclick="{
+  document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px'
+  myCheckHit()
+}">
+
+<input type="button" value="Giù" onclick="{
+  document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) + 10 + 'px'
+  myCheckHit()
+}"><br><br>
+
+<!-- IL GIOCATORE (Immagine) -->
+<img id="myImg01" src="myImgNew.jpg" style="position:absolute; width:100px; height:80px; left: 50px; top:190px;" onerror="this.src='https://via.placeholder.com/100x80/red?text=Giocatore'">
+
+<!-- IL TRAGUARDO (Immagine) -->
+<img id="myImg04" src="myFinishLine.jpg" style="position:absolute; width:100px; height:80px; left:800px; top:400px;" onerror="this.src='https://via.placeholder.com/100x80/green?text=Fine'">
+
+<!-- MURI (DIV neri - senza immagini) -->
+<div id="myImg02" style="position:absolute; width:10px; height:200px; left:350px; top:90px; background-color: black;"></div>
+<div id="myImg03" style="position:absolute; width:200px; height:10px; left:500px; top:400px; background-color: black;"></div>
+<div id="myImg05" style="position:absolute; width:300px; height:10px; left:100px; top:150px; background-color: black;"></div>
+<div id="myImg06" style="position:absolute; width:10px; height:150px; left:600px; top:200px; background-color: black;"></div>
+
+</body>
