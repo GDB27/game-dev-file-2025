@@ -47,16 +47,28 @@
     }
 </script>
 
-<!-- Bottoni di movimento -->
-<input type="button" value="Destra" onclick="{
-  document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px'
+<!-- Bottoni di movimento estesi -->
+<input type="button" value="Su" onclick="{
+  document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) - 10 + 'px'
   myCheckHit()
 }">
 
 <input type="button" value="Giù" onclick="{
   document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) + 10 + 'px'
   myCheckHit()
-}"><br><br>
+}">
+
+<input type="button" value="Sinistra" onclick="{
+  document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) - 10 + 'px'
+  myCheckHit()
+}">
+
+<input type="button" value="Destra" onclick="{
+  document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px'
+  myCheckHit()
+}">
+
+<br><br>
 
 <!-- IL GIOCATORE (Immagine) -->
 <img id="myImg01" src="myImage01.jpg" style="position:absolute; width:100px; height:80px; left: 50px; top:190px;" onerror="this.src='https://via.placeholder.com/100x80/red?text=Giocatore'">
