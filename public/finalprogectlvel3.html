@@ -62,9 +62,9 @@
        }
    }
 
- function myMove(dir) {
+function myMove(dir) {
        let myImg = document.getElementById('myImage01.jpg');
-       let steps = 5; // Muove di 5 pixel totali, ma 1 alla volta
+       let steps = 5; 
 
        for (let i = 0; i < steps; i++) {
            let currentLeft = parseInt(myImg.style.left);
@@ -83,21 +83,20 @@
                myImg.style.top = (currentTop + 1) + 'px';
            }
 
-           // Controlla la collisione ad ogni singolo pixel di movimento
            if (myCheckHit()) {
-               break; // Ferma il ciclo for se tocca un muro
+               break; 
            }
-      
-       
-       // CONTROLLO VITTORIA - ORA FUNZIONA!
-        if (myHitOther('myImage01.jpg','myImg04')) {
+
+           if (myHitOther('myImage01.jpg','myImg04')) {
                alert('You Win, now go to the next level');
                myImg.style.left = '50px';
                myImg.style.top = '190px';
                location = 'https://gdb27.github.io/game-dev-file-2025/public/finalprogectlevel2.html';
                break;
+           }
        }
    }
+
 
    document.addEventListener('keydown', function(event) {
        let key = event.key.toLowerCase();
