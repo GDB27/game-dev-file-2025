@@ -62,12 +62,11 @@
        }
    }
 
-  function myMove(dir) {
+ function myMove(dir) {
        let myImg = document.getElementById('myImage01.jpg');
-       let step = 5; // Quanti pixel vuoi muoverti in totale ad ogni pressione
+       let steps = 5; // Muove di 5 pixel totali, ma 1 alla volta
 
-       // Ciclo for per muoversi di 1 pixel alla volta per 'step' volte
-       for (let i = 0; i < step; i++) {
+       for (let i = 0; i < steps; i++) {
            let currentLeft = parseInt(myImg.style.left);
            let currentTop = parseInt(myImg.style.top);
 
@@ -84,14 +83,19 @@
                myImg.style.top = (currentTop + 1) + 'px';
            }
 
-       myCheckHit();
+           // Controlla la collisione ad ogni singolo pixel di movimento
+           if (myCheckHit()) {
+               break; // Ferma il ciclo for se tocca un muro
+           }
+      
        
        // CONTROLLO VITTORIA - ORA FUNZIONA!
-       if (myHitOther('myImage01.jpg','myImg04')) {
-           alert('You Win, now go to the next level');
-           myImg.style.left = '50px';
-           myImg.style.top = '190px';
-           location = 'https://gdb27.github.io/game-dev-file-2025/public/finalprogectlevel2.html';
+        if (myHitOther('myImage01.jpg','myImg04')) {
+               alert('You Win, now go to the next level');
+               myImg.style.left = '50px';
+               myImg.style.top = '190px';
+               location = 'https://gdb27.github.io/game-dev-file-2025/public/finalprogectlevel2.html';
+               break;
        }
    }
 
