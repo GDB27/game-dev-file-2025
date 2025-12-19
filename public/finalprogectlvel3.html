@@ -6,7 +6,7 @@
 
 <body id="myBody" background="20 by 30 orthogonal maze.png" style="background-repeat: no-repeat; background-size: 1500px 900px;">
 
-<h1 align="center"><font color="red">T4A04 Maze by Fred (Pixel Version)</font></h1>
+<h1 align="left"><font color="red">T4A04 Maze by Fred (Pixel Version) move using wasd</font></h1>
 
 <script>
    let myGlobalX = 0
@@ -90,7 +90,7 @@ function myMove(dir) {
            if (myHitOther('myImage01.jpg','myImg04')) {
                alert('You Win, now go to the next level');
                myImg.style.left = '5px';
-               myImg.style.top = '510px';
+               myImg.style.top = '480px';
                location = 'https://gdb27.github.io/game-dev-file-2025/public/finalprogectlevel2.html';
                break;
            }
@@ -116,7 +116,7 @@ function myMove(dir) {
    });
 </script>
 
-<div align="center">
+<div align="right">
     <input type="button" value="Up" ontouchstart="{myMove('up'); event.preventDefault();}" onclick="myMove('up')">
     <br>
     <input type="button" value="Left" ontouchstart="{myMove('left'); event.preventDefault();}" onclick="myMove('left')">
@@ -129,7 +129,7 @@ function myMove(dir) {
 
 <img id="myImage01.jpg" src="myImage01.jpg" style="position:absolute; width:30px; height:30px; left:5px; top:510px; z-index: 10;">
 
-<img id="myImg04" src="myImage02.jpg" style="position:absolute; width:50px; height:50px; left:1510px; top:450px; opacity: 0.5;">
+<img id="myImg04" src="myImage02.jpg" style="position:absolute; width:50px; height:50px; left:1510px; top:420px; opacity: 0.5;">
 
 </body>
 </html>
