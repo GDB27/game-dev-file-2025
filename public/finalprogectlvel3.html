@@ -68,16 +68,16 @@
        let currentTop = parseInt(myImg.style.top);
 
        if (dir == 'right') {
-           myImg.style.left = (currentLeft + 5) + 'px';
+           myImg.style.left = (currentLeft + 1) + 'px';
        }
        if (dir == 'left') {
-           myImg.style.left = (currentLeft - 5) + 'px';
+           myImg.style.left = (currentLeft - 1) + 'px';
        }
        if (dir == 'up') {
-           myImg.style.top = (currentTop - 5) + 'px';
+           myImg.style.top = (currentTop - 1) + 'px';
        }
        if (dir == 'down') {
-           myImg.style.top = (currentTop + 5) + 'px';
+           myImg.style.top = (currentTop + 1) + 'px';
        }
 
        myCheckHit();
