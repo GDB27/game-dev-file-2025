@@ -62,23 +62,27 @@
        }
    }
 
-   function myMove(dir) {
+  function myMove(dir) {
        let myImg = document.getElementById('myImage01.jpg');
-       let currentLeft = parseInt(myImg.style.left);
-       let currentTop = parseInt(myImg.style.top);
+       let step = 5; // Quanti pixel vuoi muoverti in totale ad ogni pressione
 
-       if (dir == 'right') {
-           myImg.style.left = (currentLeft + 1) + 'px';
-       }
-       if (dir == 'left') {
-           myImg.style.left = (currentLeft - 1) + 'px';
-       }
-       if (dir == 'up') {
-           myImg.style.top = (currentTop - 1) + 'px';
-       }
-       if (dir == 'down') {
-           myImg.style.top = (currentTop + 1) + 'px';
-       }
+       // Ciclo for per muoversi di 1 pixel alla volta per 'step' volte
+       for (let i = 0; i < step; i++) {
+           let currentLeft = parseInt(myImg.style.left);
+           let currentTop = parseInt(myImg.style.top);
+
+           if (dir == 'right') {
+               myImg.style.left = (currentLeft + 1) + 'px';
+           }
+           if (dir == 'left') {
+               myImg.style.left = (currentLeft - 1) + 'px';
+           }
+           if (dir == 'up') {
+               myImg.style.top = (currentTop - 1) + 'px';
+           }
+           if (dir == 'down') {
+               myImg.style.top = (currentTop + 1) + 'px';
+           }
 
        myCheckHit();
        
