@@ -3,11 +3,10 @@
 <h1 align="center"><font color="red">T4A04 Maze by Fred</font></h1>
 
 <script>
-    // Variabili globali
+
     let myGlobalX = 0
     let myClock
 
-    // Funzione per il controllo delle collisioni originale
     function myHitOther(my1, my2) {
         left1 = parseInt(document.getElementById(my1).style.left)
         right1 = left1 + parseInt(document.getElementById(my1).style.width)
@@ -26,7 +25,7 @@
     }
 
     function myCheckHit() {
-        // Controllo collisioni con i 9 muri (DIV neri)
+    
         if (myHitOther('myImg01', 'myImg02') || 
             myHitOther('myImg01', 'myImg03') || 
             myHitOther('myImg01', 'myImg05') || 
@@ -40,7 +39,7 @@
             document.getElementById('myImg01').style.top = '190px'
         }
 
-        // Controllo collisione con il traguardo (Immagine finale)
+        
         if (myHitOther('myImg01', 'myImg04')) {
             alert('Hai Vinto! Vai al prossimo livello.')
             document.getElementById('myImg01').style.left = '20px'
@@ -50,32 +49,32 @@
 </script>
 
 <!-- Bottoni di movimento estesi -->
-<input type="button" value="Su" onclick="{
+<input type="button" value="up" onclick="{
   document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) - 10 + 'px'
   myCheckHit()
 }">
 
-<input type="button" value="Giù" onclick="{
+<input type="button" value="down" onclick="{
   document.getElementById('myImg01').style.top = parseInt(document.getElementById('myImg01').style.top) + 10 + 'px'
   myCheckHit()
 }">
 
-<input type="button" value="Sinistra" onclick="{
+<input type="button" value="left" onclick="{
   document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) - 10 + 'px'
   myCheckHit()
 }">
 
-<input type="button" value="Destra" onclick="{
+<input type="button" value="right" onclick="{
   document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px'
   myCheckHit()
 }">
 
 <br><br>
 
-<!-- IL GIOCATORE (Immagine) -->
+
 <img id="myImg01" src="myImage01.jpg" style="position: absolute; width: 43px; height: 50px; left: 60px; top: 190px;" onerror="this.src='https://via.placeholder.com/100x80/red?text=Giocatore'">
 
-<!-- IL TRAGUARDO (Immagine) -->
+
 <img id="myImg04" src="myImage02.jpg" style="position:absolute; width:100px; height:80px; left:950px; top:370px;" onerror="this.src='https://via.placeholder.com/100x80/green?text=Fine'">
 
 
