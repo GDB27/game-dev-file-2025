@@ -6,8 +6,7 @@
 
 <body id="myBody" background="20 by 30 orthogonal maze.png" style="background-repeat: no-repeat; background-size: 1500px 900px;">
 
-<h1 align="right"><font color="red">T4A04 Maze gabri 
-   move using wasd</font></h1>
+<h1 align="right"><font color="red">T4A04 Maze gabri</font></h1>
 
 <script>
    let myGlobalX = 0
@@ -118,12 +117,12 @@ function myMove(dir) {
 </script>
 
 <div align="right">
-    <input type="button" value="Up" ontouchstart="{myMove('up'); event.preventDefault();}" onclick="myMove('up')">
+    <input type="button" value="Up(W)" ontouchstart="{myMove('up'); event.preventDefault();}" onclick="myMove('up')">
     <br>
-    <input type="button" value="Left" ontouchstart="{myMove('left'); event.preventDefault();}" onclick="myMove('left')">
-    <input type="button" value="Right" ontouchstart="{myMove('right'); event.preventDefault();}" onclick="myMove('right')">
+    <input type="button" value="Left(A)" ontouchstart="{myMove('left'); event.preventDefault();}" onclick="myMove('left')">
+    <input type="button" value="Right(D)" ontouchstart="{myMove('right'); event.preventDefault();}" onclick="myMove('right')">
     <br>
-    <input type="button" value="Down" ontouchstart="{myMove('down'); event.preventDefault();}" onclick="myMove('down')">
+    <input type="button" value="Down(S)" ontouchstart="{myMove('down'); event.preventDefault();}" onclick="myMove('down')">
 </div>
 
 <br><br>
