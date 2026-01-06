@@ -5,7 +5,7 @@
 <title>T4A04 Maze by Fred</title>
 </head>
 
-<body id="myBody" background="20 by 30 orthogonal maze.png" style="background-repeat: no-repeat; background-size: 1500px 900px;">
+<body id="myBody" background="40 cells diameter theta maze.png" style="background-repeat: no-repeat; background-size: 1000px 1000px;">
 
 <h1 align="right"><font color="red">T4A04 Maze gabri</font></h1>
 
@@ -17,12 +17,12 @@
    let myCtx = myCanvas.getContext('2d');
    let myBackground = new Image();
    
-   myBackground.src = '20 by 30 orthogonal maze.png'; 
+   myBackground.src = '40 cells diameter theta maze.png'; 
    
    myBackground.onload = function() {
-       myCanvas.width = 1500;
-       myCanvas.height = 900;
-       myCtx.drawImage(myBackground, 0, 0, 1500, 900);
+       myCanvas.width = 1000;
+       myCanvas.height = 1000;
+       myCtx.drawImage(myBackground, 0, 0, 1000, 1000);
    };
 
    function myCheckHit(){
