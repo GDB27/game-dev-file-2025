@@ -69,8 +69,8 @@ function myMove(dir) {
        let steps = 10; 
 
        for (let i = 0; i < steps; i++) {
-           let currentLeft = parseint(myImg.style.left);
-           let currentTop = parseint(myImg.style.top);
+           let currentLeft = parseInt(myImg.style.left);
+           let currentTop = parseInt(myImg.style.top);
 
            if (dir == 'right') {
                myImg.style.left = (currentLeft + 1) + 'px';
