@@ -28,8 +28,8 @@
 
    function myCheckHit(){
        let player = document.getElementById('myImage01.jpg');
-       let x = parseInt(player.style.left) + 10; 
-       let y = parseInt(player.style.top) + 10; 
+       let x = parseInt(player.style.left) + 15; 
+       let y = parseInt(player.style.top) + 15; 
 
        try {
            let pixel = myCtx.getImageData(x, y, 1, 1).data;
@@ -66,23 +66,23 @@
 
 function myMove(dir) {
        let myImg = document.getElementById('myImage01.jpg');
-       let steps = 10; 
+       let steps = 5; 
 
        for (let i = 0; i < steps; i++) {
            let currentLeft = parseInt(myImg.style.left);
            let currentTop = parseInt(myImg.style.top);
 
            if (dir == 'right') {
-               myImg.style.left = (currentLeft + 0.6) + 'px';
+               myImg.style.left = (currentLeft + 1) + 'px';
            }
            if (dir == 'left') {
-               myImg.style.left = (currentLeft - 0.5) + 'px';
+               myImg.style.left = (currentLeft - 1) + 'px';
            }
            if (dir == 'up') {
-               myImg.style.top = (currentTop - 0.5) + 'px';
+               myImg.style.top = (currentTop - 1) + 'px';
            }
            if (dir == 'down') {
-               myImg.style.top = (currentTop + 0.6) + 'px';
+               myImg.style.top = (currentTop + 1) + 'px';
            }
 
            if (myCheckHit()) {
