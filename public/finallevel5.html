@@ -28,14 +28,14 @@
 
    function myCheckHit(){
        let player = document.getElementById('myImage01.jpg');
-       let x = parseInt(player.style.left) + 15; 
-       let y = parseInt(player.style.top) + 15; 
+       let x = parseInt(player.style.left) + 10; 
+       let y = parseInt(player.style.top) + 10; 
 
        try {
            let pixel = myCtx.getImageData(x, y, 1, 1).data;
            let brightness = pixel[0] + pixel[1] + pixel[2];
 
-           if (brightness < 100) { 
+           if (brightness < 200) { 
                console.log('Hai toccato un muro!');
                player.style.left = '235px';
                player.style.top = '590px';
@@ -69,20 +69,20 @@ function myMove(dir) {
        let steps = 10; 
 
        for (let i = 0; i < steps; i++) {
-           let currentLeft = parseFloat(myImg.style.left);
-           let currentTop = parseFloat(myImg.style.top);
+           let currentLeft = parseint(myImg.style.left);
+           let currentTop = parseint(myImg.style.top);
 
            if (dir == 'right') {
-               myImg.style.left = (currentLeft + 0.5) + 'px';
+               myImg.style.left = (currentLeft + 1) + 'px';
            }
            if (dir == 'left') {
-               myImg.style.left = (currentLeft - 0.5) + 'px';
+               myImg.style.left = (currentLeft - 1) + 'px';
            }
            if (dir == 'up') {
-               myImg.style.top = (currentTop - 0.5) + 'px';
+               myImg.style.top = (currentTop - 1) + 'px';
            }
            if (dir == 'down') {
-               myImg.style.top = (currentTop + 0.5) + 'px';
+               myImg.style.top = (currentTop + 1) + 'px';
            }
 
            if (myCheckHit()) {
