@@ -69,20 +69,20 @@ function myMove(dir) {
        let steps = 5; 
 
        for (let i = 0; i < steps; i++) {
-           let currentLeft = parseInt(myImg.style.left);
-           let currentTop = parseInt(myImg.style.top);
+           let currentLeft = parseFloat(myImg.style.left);
+           let currentTop = parseFloat(myImg.style.top);
 
            if (dir == 'right') {
-               myImg.style.left = (currentLeft + 1) + 'px';
+               myImg.style.left = (currentLeft + 0.5) + 'px';
            }
            if (dir == 'left') {
-               myImg.style.left = (currentLeft - 1) + 'px';
+               myImg.style.left = (currentLeft - 0.5) + 'px';
            }
            if (dir == 'up') {
-               myImg.style.top = (currentTop - 1) + 'px';
+               myImg.style.top = (currentTop - 0.5) + 'px';
            }
            if (dir == 'down') {
-               myImg.style.top = (currentTop + 1) + 'px';
+               myImg.style.top = (currentTop + 0.5) + 'px';
            }
 
            if (myCheckHit()) {
