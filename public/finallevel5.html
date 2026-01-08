@@ -73,7 +73,7 @@ function myMove(dir) {
            let currentTop = parseInt(myImg.style.top);
 
            if (dir == 'right') {
-               myImg.style.left = (currentLeft + 1/2) + 'px';
+               myImg.style.left = (currentLeft + (0.5)) + 'px';
            }
            if (dir == 'left') {
                myImg.style.left = (currentLeft - 0.5) + 'px';
@@ -82,7 +82,7 @@ function myMove(dir) {
                myImg.style.top = (currentTop - 0.5) + 'px';
            }
            if (dir == 'down') {
-               myImg.style.top = (currentTop + 1/2) + 'px';
+               myImg.style.top = (currentTop + (0.5)) + 'px';
            }
 
            if (myCheckHit()) {
