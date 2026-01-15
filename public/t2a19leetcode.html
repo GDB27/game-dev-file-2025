@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetCode Easy Problem</title>
+</head>
+<body>
+    
+    <h2>Two Sum</h2>
+    
+    <p><b>LeetCode Easy Problem</b></p>
+    
+    <p>Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.</p>
+    
+    <h4>Example:</h4>
+    <pre>Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Explanation: nums[0] + nums[1] == 9</pre>
+    
+    <h4>Test your solution:</h4>
+    
+    Array: <input id="myArray" type="text" value="2,7,11,15"><br>
+    Target: <input id="myTarget" type="number" value="9"><br>
+    
+    <input type="button" value="Find Two Sum" onclick="{
+        let nums = document.getElementById('myArray').value.split(',').map(Number)
+        let target = parseInt(document.getElementById('myTarget').value)
+        
+        let result = ''
+        for(let i = 0; i < nums.length; i++){
+            for(let j = i + 1; j < nums.length; j++){
+                if(nums[i] + nums[j] === target){
+                    result = '[' + i + ',' + j + ']'
+                }
+            }
+        }
+        
+        document.getElementById('myDiv01').innerHTML = 'Result: ' + result
+    }">
+    
+    <div id="myDiv01">...</div>
+    
+</body>
+</html>
