@@ -11,11 +11,6 @@
     <img id="myImage02" src="myImage02.jpg" style="position:absolute; width:100px; height:80px; top:100px; left:400px;">
     
     <script>
-    let prevLeft1 = 100;
-    let prevTop1 = 100;
-    let prevLeft2 = 400;
-    let prevTop2 = 100;
-    
     function myHitOther(my1,my2){
         let left1 = parseInt(document.getElementById(my1).style.left)
         let right1 = left1 + parseInt(document.getElementById(my1).style.width)
@@ -32,48 +27,45 @@
     
     function myCheckHit(){
         if (myHitOther('myImage01','myImage02')){
-            document.getElementById('myImage01').style.left = prevLeft1 + 'px';
-            document.getElementById('myImage01').style.top = prevTop1 + 'px';
-            document.getElementById('myImage02').style.left = prevLeft2 + 'px';
-            document.getElementById('myImage02').style.top = prevTop2 + 'px';
+            location.reload()
         }
     }
     
     document.addEventListener('keydown', function(event){
-        prevLeft1 = parseInt(document.getElementById('myImage01').style.left);
-        prevTop1 = parseInt(document.getElementById('myImage01').style.top);
+        let left1 = parseInt(document.getElementById('myImage01').style.left);
+        let top1 = parseInt(document.getElementById('myImage01').style.top);
         
         if(event.key === 'ArrowLeft'){
-            document.getElementById('myImage01').style.left = (prevLeft1 - 10) + 'px';
+            document.getElementById('myImage01').style.left = (left1 - 10) + 'px';
         }
         if(event.key === 'ArrowRight'){
-            document.getElementById('myImage01').style.left = (prevLeft1 + 10) + 'px';
+            document.getElementById('myImage01').style.left = (left1 + 10) + 'px';
         }
         if(event.key === 'ArrowUp'){
-            document.getElementById('myImage01').style.top = (prevTop1 - 10) + 'px';
+            document.getElementById('myImage01').style.top = (top1 - 10) + 'px';
         }
         if(event.key === 'ArrowDown'){
-            document.getElementById('myImage01').style.top = (prevTop1 + 10) + 'px';
+            document.getElementById('myImage01').style.top = (top1 + 10) + 'px';
         }
         
         myCheckHit();
     });
     
     document.addEventListener('keydown', function(event){
-        prevLeft2 = parseInt(document.getElementById('myImage02').style.left);
-        prevTop2 = parseInt(document.getElementById('myImage02').style.top);
+        let left2 = parseInt(document.getElementById('myImage02').style.left);
+        let top2 = parseInt(document.getElementById('myImage02').style.top);
         
         if(event.key === 'a'){
-            document.getElementById('myImage02').style.left = (prevLeft2 - 10) + 'px';
+            document.getElementById('myImage02').style.left = (left2 - 10) + 'px';
         }
         if(event.key === 'd'){
-            document.getElementById('myImage02').style.left = (prevLeft2 + 10) + 'px';
+            document.getElementById('myImage02').style.left = (left2 + 10) + 'px';
         }
         if(event.key === 'w'){
-            document.getElementById('myImage02').style.top = (prevTop2 - 10) + 'px';
+            document.getElementById('myImage02').style.top = (top2 - 10) + 'px';
         }
         if(event.key === 's'){
-            document.getElementById('myImage02').style.top = (prevTop2 + 10) + 'px';
+            document.getElementById('myImage02').style.top = (top2 + 10) + 'px';
         }
         
         myCheckHit();
