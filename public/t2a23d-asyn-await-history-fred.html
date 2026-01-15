@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Cars API</title>
+</head>
+<body>
+    
+    <h1 align="center">Random Cars API</h1>
+    
+    <script>
+      const carsAPI = [
+        {
+          brand: "Ferrari",
+          model: "F40",
+          year: 1987,
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/F40_Ferrari_20090509.jpg/400px-F40_Ferrari_20090509.jpg"
+        },
+        {
+          brand: "Lamborghini",
+          model: "Countach",
+          year: 1974,
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Lamborghini_Countach_LP400S_1979.jpg/400px-Lamborghini_Countach_LP400S_1979.jpg"
+        },
+        {
+          brand: "Porsche",
+          model: "911",
+          year: 1963,
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Porsche_911_996_Carrera_4S.jpg/400px-Porsche_911_996_Carrera_4S.jpg"
+        },
+        {
+          brand: "Ford",
+          model: "Mustang",
+          year: 1964,
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/1965_Ford_Mustang_coupe_%2814216930915%29.jpg/400px-1965_Ford_Mustang_coupe_%2814216930915%29.jpg"
+        },
+        {
+          brand: "Chevrolet",
+          model: "Corvette",
+          year: 1953,
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/1978_Chevrolet_Corvette_C3_coupe_%282015-07-09%29_01.jpg/400px-1978_Chevrolet_Corvette_C3_coupe_%282015-07-09%29_01.jpg"
+        }
+      ];
+      
+      async function fetchRandomCar(){
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        const randomIndex = Math.floor(Math.random() * carsAPI.length);
+        const data = carsAPI[randomIndex];
+        console.log(data);
+        
+        const myJson = JSON.stringify(data, null, 2);
+        document.getElementById('myDiv').innerHTML = `<pre>${myJson}</pre>`;
+        document.getElementById('myDiv').innerHTML += `<img src="${data.image}" alt="${data.brand} ${data.model}" style="max-width: 100%; height: auto;">`;
+      }
+    </script>
+    
+    <input type="button" value="Get Random Car" onclick="fetchRandomCar()"><br><br>
+    
+    <div id="myDiv">...</div>
+    
+</body>
+</html>
