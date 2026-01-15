@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Cars API</title>
+    <title>JSON API Example</title>
 </head>
 <body>
     
-    <h1 align="center">Random Cars API</h1>
+    <h1 align="center">t2a22-json-fred.html</h1>
     
     <script>
       const carsAPI = [
@@ -15,48 +15,56 @@
           brand: "Ferrari",
           model: "F40",
           year: 1987,
-          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/F40_Ferrari_20090509.jpg/400px-F40_Ferrari_20090509.jpg"
+          image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400"
         },
         {
           brand: "Lamborghini",
           model: "Countach",
           year: 1974,
-          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Lamborghini_Countach_LP400S_1979.jpg/400px-Lamborghini_Countach_LP400S_1979.jpg"
+          image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400"
         },
         {
           brand: "Porsche",
           model: "911",
           year: 1963,
-          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Porsche_911_996_Carrera_4S.jpg/400px-Porsche_911_996_Carrera_4S.jpg"
+          image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400"
         },
         {
           brand: "Ford",
           model: "Mustang",
           year: 1964,
-          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/1965_Ford_Mustang_coupe_%2814216930915%29.jpg/400px-1965_Ford_Mustang_coupe_%2814216930915%29.jpg"
+          image: "https://images.unsplash.com/photo-1584345604476-8ec5f5ca2c62?w=400"
         },
         {
           brand: "Chevrolet",
           model: "Corvette",
           year: 1953,
-          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/1978_Chevrolet_Corvette_C3_coupe_%282015-07-09%29_01.jpg/400px-1978_Chevrolet_Corvette_C3_coupe_%282015-07-09%29_01.jpg"
+          image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400"
         }
       ];
       
-      async function fetchRandomCar(){
+      async function fetchData(type){
         await new Promise(resolve => setTimeout(resolve, 300));
         
-        const randomIndex = Math.floor(Math.random() * carsAPI.length);
-        const data = carsAPI[randomIndex];
+        let data;
+        
+        if(type === 'car'){
+          const randomIndex = Math.floor(Math.random() * carsAPI.length);
+          data = carsAPI[randomIndex];
+        }
+        
         console.log(data);
         
         const myJson = JSON.stringify(data, null, 2);
         document.getElementById('myDiv').innerHTML = `<pre>${myJson}</pre>`;
-        document.getElementById('myDiv').innerHTML += `<img src="${data.image}" alt="${data.brand} ${data.model}" style="max-width: 100%; height: auto;">`;
+        document.getElementById('myDiv').innerHTML += `<img src="${data.image}" alt="Random Image" style="max-width: 100%; height: auto;">`;
       }
     </script>
     
-    <input type="button" value="Get Random Car" onclick="fetchRandomCar()"><br><br>
+    <select id="mySelect" size="1" onchange="fetchData(this.value)">
+      <option></option>
+      <option value="car">Random Car</option>
+    </select><br><br>
     
     <div id="myDiv">...</div>
     
